@@ -24,35 +24,27 @@ jobs:
       # 3️⃣ Conectar al servidor y desplegar solo src/
       - name: Deploy src to Hestia server
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@152.67.44.214 "
-            sudo su - jampasnando -c '
-            # Rutas
+          ssh -o StrictHostKeyChecking=no ubuntu@152.67.44.214 << 'EOF'
+
+            sudo su - jampasnando << 'INNER'
+
             TMP_DIR=/tmp/tumerienda_deploy
             PUBLIC_HTML=/home/jampasnando/web/tumerienda.sistembo.online/public_html
 
-            # Limpiar carpeta temporal
-            rm -rf \$TMP_DIR
+            rm -rf $TMP_DIR
 
-            # Clonar todo el repo temporalmente
-            git clone https://github.com/jampasnando/tumerienda.git \$TMP_DIR
+            git clone https://github.com/jampasnando/tumerienda.git $TMP_DIR
 
-            # Copiar solo src/ a public_html, EXCLUYENDO .env y storage
             rsync -av --delete \
               --exclude='.env' \
               --exclude='storage/' \
               --exclude='vendor/' \
-              \$TMP_DIR/src/ \$PUBLIC_HTML/
+              $TMP_DIR/src/ $PUBLIC_HTML/
 
-            # Entrar a public_html
-            cd \$PUBLIC_HTML
+            cd $PUBLIC_HTML
 
-            # Instalar dependencias de PHP
             composer install --no-dev --optimize-autoloader
 
-            # Ejecutar migraciones si es necesario (opcional, descomenta si confías)
-            # php artisan migrate --force
-
-            # Limpiar y cachear configuración y rutas
             php artisan config:clear
             php artisan config:cache
             php artisan route:cache
@@ -60,7 +52,9 @@ jobs:
             php artisan view:cache
 
             php artisan storage:link || true
-            
-            # Permisos correctos
+
             chmod -R 775 storage bootstrap/cache
-          "
+
+            INNER
+
+          EOF
