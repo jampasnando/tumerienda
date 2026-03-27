@@ -26,16 +26,14 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@152.67.44.214 << 'EOF'
 
-            sudo su - jampasnando << 'INNER'
-
             TMP_DIR=/tmp/tumerienda_deploy
             PUBLIC_HTML=/home/jampasnando/web/tumerienda.sistembo.online/public_html
 
-            rm -rf $TMP_DIR
+            sudo rm -rf $TMP_DIR
 
             git clone https://github.com/jampasnando/tumerienda.git $TMP_DIR
 
-            rsync -av --delete \
+            sudo rsync -av --delete \
               --exclude='.env' \
               --exclude='storage/' \
               --exclude='vendor/' \
@@ -43,18 +41,16 @@ jobs:
 
             cd $PUBLIC_HTML
 
-            composer install --no-dev --optimize-autoloader
+            sudo composer install --no-dev --optimize-autoloader
 
-            php artisan config:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:clear
-            php artisan view:cache
+            sudo php artisan config:clear
+            sudo php artisan config:cache
+            sudo php artisan route:cache
+            sudo php artisan view:clear
+            sudo php artisan view:cache
 
-            php artisan storage:link || true
+            sudo php artisan storage:link || true
 
-            chmod -R 775 storage bootstrap/cache
-
-            INNER
+            sudo chmod -R 775 storage bootstrap/cache
 
           EOF
