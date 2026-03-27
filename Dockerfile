@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install \
         gd intl zip mbstring bcmath pdo_pgsql pgsql \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Timezone
 ENV TZ=America/La_Paz
