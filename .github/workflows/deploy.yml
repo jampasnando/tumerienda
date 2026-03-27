@@ -24,7 +24,8 @@ jobs:
       # 3️⃣ Conectar al servidor y desplegar solo src/
       - name: Deploy src to Hestia server
         run: |
-          ssh -o StrictHostKeyChecking=no jampasnando@152.67.44.214 "
+          ssh -o StrictHostKeyChecking=no ubuntu@152.67.44.214 "
+            sudo su - jampasnando -c '
             # Rutas
             TMP_DIR=/tmp/tumerienda_deploy
             PUBLIC_HTML=/home/jampasnando/web/tumerienda.sistembo.online/public_html
