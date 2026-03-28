@@ -1,6 +1,5 @@
 name: 🚀 Deploy Laravel src to Hestia
 
-# Se ejecuta cuando hay push a main
 on:
   push:
     branches:
@@ -11,55 +10,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Clonar el repositorio en Actions
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Cargar la clave SSH para conectarse al servidor
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      # 3️⃣ Conectar al servidor y desplegar solo src/
       - name: Deploy src to Hestia server
         run: |
-          ssh -o StrictHostKeyChecking=no jampasnando@152.67.44.214 "
-            # Rutas
+          ssh -o StrictHostKeyChecking=no ubuntu@152.67.44.214 << 'EOF'
+
             TMP_DIR=/tmp/tumerienda_deploy
             PUBLIC_HTML=/home/jampasnando/web/tumerienda.sistembo.online/public_html
 
-            # Limpiar carpeta temporal
-            rm -rf \$TMP_DIR
+            # Limpiar
+            rm -rf $TMP_DIR
 
-            # Clonar todo el repo temporalmente
-            git clone https://github.com/jampasnando/tumerienda.git \$TMP_DIR
+            # Clonar
+            git clone https://github.com/jampasnando/tumerienda.git $TMP_DIR
 
-            # Copiar solo src/ a public_html, EXCLUYENDO .env y storage
-            rsync -av --delete \
+            # Copiar como usuario correcto
+            sudo -u jampasnando rsync -av --delete \
               --exclude='.env' \
               --exclude='storage/' \
               --exclude='vendor/' \
-              \$TMP_DIR/src/ \$PUBLIC_HTML/
+              $TMP_DIR/src/ $PUBLIC_HTML/
 
-            # Entrar a public_html
-            cd \$PUBLIC_HTML
+            cd $PUBLIC_HTML
 
-            # Instalar dependencias de PHP
-            composer install --no-dev --optimize-autoloader
+            # Composer como usuario correcto
+            sudo -u jampasnando composer install --no-dev --optimize-autoloader
 
-            # Ejecutar migraciones si es necesario (opcional, descomenta si confías)
-            # php artisan migrate --force
+            # Laravel cache
+            sudo -u jampasnando php artisan config:clear
+            sudo -u jampasnando php artisan config:cache
+            sudo -u jampasnando php artisan route:cache
+            sudo -u jampasnando php artisan view:clear
+            sudo -u jampasnando php artisan view:cache
 
-            # Limpiar y cachear configuración y rutas
-            php artisan config:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:clear
-            php artisan view:cache
+            # Storage
+            sudo -u jampasnando php artisan storage:link || true
 
-            php artisan storage:link || true
-            
-            # Permisos correctos
+            # Permisos finales
             chmod -R 775 storage bootstrap/cache
-          "
+            chown -R jampasnando:jampasnando $PUBLIC_HTML
+
+          EOF
