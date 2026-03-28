@@ -25,13 +25,13 @@ jobs:
             TMP_DIR=/tmp/tumerienda_deploy
             PUBLIC_HTML=/home/jampasnando/web/tumerienda.sistembo.online/public_html
 
-            # Limpiar
+            # Limpiar temporal
             rm -rf $TMP_DIR
 
-            # Clonar
+            # Clonar repo
             git clone https://github.com/jampasnando/tumerienda.git $TMP_DIR
 
-            # Copiar como usuario correcto
+            # Copiar código
             sudo -u jampasnando rsync -av --delete \
               --exclude='.env' \
               --exclude='storage/' \
@@ -40,7 +40,13 @@ jobs:
 
             cd $PUBLIC_HTML
 
-            # Composer como usuario correcto
+            # 🔥 CLAVE: asegurar estructura Laravel ANTES de composer
+            sudo -u jampasnando mkdir -p storage/framework/cache
+            sudo -u jampasnando mkdir -p storage/framework/sessions
+            sudo -u jampasnando mkdir -p storage/framework/views
+            sudo -u jampasnando mkdir -p bootstrap/cache
+
+            # Dependencias
             sudo -u jampasnando composer install --no-dev --optimize-autoloader
 
             # Laravel cache
@@ -50,11 +56,11 @@ jobs:
             sudo -u jampasnando php artisan view:clear
             sudo -u jampasnando php artisan view:cache
 
-            # Storage
+            # Storage link
             sudo -u jampasnando php artisan storage:link || true
 
-            # Permisos finales
-            chmod -R 775 storage bootstrap/cache
-            chown -R jampasnando:jampasnando $PUBLIC_HTML
+            # Permisos finales (🔥 clave para evitar futuros errores)
+            sudo chown -R jampasnando:jampasnando $PUBLIC_HTML
+            sudo chmod -R 775 $PUBLIC_HTML/storage $PUBLIC_HTML/bootstrap/cache
 
           EOF
