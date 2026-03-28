@@ -13,4 +13,8 @@ class Gestion extends Model
         'fecha_inicio',
         'fecha_fin',
     ];
+    public function beneficiariosGestion()
+    {
+        return $this->hasMany(BeneficiarioGestion::class);
+    }
 }

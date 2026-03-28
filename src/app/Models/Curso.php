@@ -17,4 +17,8 @@ class Curso extends Model
     {
         return $this->belongsTo(Colegio::class);
     }
+    public function beneficiariosGestion()
+    {
+        return $this->hasMany(BeneficiarioGestion::class);
+    }
 }

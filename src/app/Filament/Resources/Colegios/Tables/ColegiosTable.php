@@ -15,6 +15,8 @@ class ColegiosTable
     {
         return $table
             ->columns([
+                TextColumn::make('nombre')
+                    ->searchable(),
                 TextColumn::make('telefono')
                     ->searchable(),
                 TextColumn::make('celular')

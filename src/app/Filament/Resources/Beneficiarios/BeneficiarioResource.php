@@ -44,7 +44,8 @@ class BeneficiarioResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\GestionesRelationManager::class,
+            RelationManagers\SubscripcionesRelationManager::class,
         ];
     }
 

@@ -20,4 +20,8 @@ class Colegio extends Model
     public function cursos(){
         return $this->hasMany(Curso::class);
     }
+    public function beneficiariosGestion()
+    {
+        return $this->hasMany(BeneficiarioGestion::class);
+    }
 }
