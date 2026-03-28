@@ -21,4 +21,8 @@ class Curso extends Model
     {
         return $this->hasMany(BeneficiarioGestion::class);
     }
+    public function beneficiariosHistorico()
+    {
+        return $this->hasMany(BeneficiarioGestion::class);
+    }
 }

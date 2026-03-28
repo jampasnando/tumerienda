@@ -23,16 +23,20 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CursosRelationManager extends RelationManager
+class BeneficiariosGestionRelationManager extends RelationManager
 {
-    protected static string $relationship = 'cursos';
+    protected static string $relationship = 'beneficiariosGestion';
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('nombre'),
-                TextInput::make('nivel'),
+                TextInput::make('beneficiario_id')
+                    ->numeric(),
+                TextInput::make('curso_id')
+                    ->numeric(),
+                TextInput::make('gestion_id')
+                    ->numeric(),
                 TextInput::make('estado'),
             ]);
     }
@@ -40,12 +44,17 @@ class CursosRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('nombre')
+            ->recordTitleAttribute('id')
             ->columns([
-                TextColumn::make('nombre')
-                    ->searchable(),
-                TextColumn::make('nivel')
-                    ->searchable(),
+                TextColumn::make('beneficiario.nombre')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('curso.nombre')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('gestion.anio')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('estado')
                     ->searchable(),
                 TextColumn::make('created_at')
@@ -69,7 +78,7 @@ class CursosRelationManager extends RelationManager
                 // AssociateAction::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                // EditAction::make(),
                 // DissociateAction::make(),
                 DeleteAction::make(),
                 ForceDeleteAction::make(),

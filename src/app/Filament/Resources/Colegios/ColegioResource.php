@@ -43,7 +43,8 @@ class ColegioResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CursosRelationManager::class
+            RelationManagers\CursosRelationManager::class,
+            RelationManagers\BeneficiariosGestionRelationManager::class
         ];
     }
 

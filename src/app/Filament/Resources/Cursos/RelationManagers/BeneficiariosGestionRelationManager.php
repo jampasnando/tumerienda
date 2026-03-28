@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Colegios\RelationManagers;
+namespace App\Filament\Resources\Cursos\RelationManagers;
 
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
@@ -23,16 +23,20 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CursosRelationManager extends RelationManager
+class BeneficiariosGestionRelationManager extends RelationManager
 {
-    protected static string $relationship = 'cursos';
+    protected static string $relationship = 'beneficiariosGestion';
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('nombre'),
-                TextInput::make('nivel'),
+                TextInput::make('beneficiario_id')
+                    ->numeric(),
+                TextInput::make('colegio_id')
+                    ->numeric(),
+                TextInput::make('gestion_id')
+                    ->numeric(),
                 TextInput::make('estado'),
             ]);
     }
@@ -40,27 +44,24 @@ class CursosRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('nombre')
-            ->columns([
-                TextColumn::make('nombre')
-                    ->searchable(),
-                TextColumn::make('nivel')
-                    ->searchable(),
-                TextColumn::make('estado')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+        ->columns([
+            TextColumn::make('beneficiario.nombre')
+                ->label('Beneficiario')
+                ->searchable(),
+
+            TextColumn::make('gestion.anio')
+                ->label('Gestión')
+                ->colors([
+                    'success' => fn ($record) => $record->gestion->activo,
+                    'danger' => fn ($record) => !$record->gestion->activo,
+                ]),
+
+            TextColumn::make('estado')
+                ->badge(),
+        ])
+        // ->headerActions([])
+        // ->actions([])
+        // ->bulkActions([])
             ->filters([
                 TrashedFilter::make(),
             ])
@@ -84,8 +85,12 @@ class CursosRelationManager extends RelationManager
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query
+                ->whereHas('gestion', fn ($q) =>
+                        $q->where('activo', true)
+                    )
                 ->withoutGlobalScopes([
                     SoftDeletingScope::class,
                 ]));
     }
+
 }

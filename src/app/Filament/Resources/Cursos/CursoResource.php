@@ -42,7 +42,8 @@ class CursoResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\BeneficiariosGestionRelationManager::class,
+            RelationManagers\BeneficiariosHistoricoRelationManager::class,
         ];
     }
 
