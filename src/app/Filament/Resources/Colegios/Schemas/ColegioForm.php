@@ -12,14 +12,12 @@ class ColegioForm
     {
         return $schema
             ->components([
-                Textarea::make('nombre')
-                    ->columnSpanFull(),
-                Textarea::make('direccion')
-                    ->columnSpanFull(),
+                TextInput::make('nombre'),
                 TextInput::make('telefono')
                     ->tel(),
                 TextInput::make('celular'),
                 TextInput::make('contacto'),
+                Textarea::make('direccion'),
                 TextInput::make('latitud'),
                 TextInput::make('longitud'),
             ]);

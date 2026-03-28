@@ -15,7 +15,7 @@ class CursosTable
     {
         return $table
             ->columns([
-                TextColumn::make('colegio_id')
+                TextColumn::make('colegio.nombre')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('nombre')
@@ -37,6 +37,7 @@ class CursosTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('colegio_id')
             ->filters([
                 //
             ])

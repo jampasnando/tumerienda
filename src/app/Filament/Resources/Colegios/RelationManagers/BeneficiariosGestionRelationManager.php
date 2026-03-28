@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Colegios\RelationManagers;
 
+use App\Models\Gestion;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -14,6 +15,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -31,13 +33,28 @@ class BeneficiariosGestionRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                TextInput::make('beneficiario_id')
-                    ->numeric(),
-                TextInput::make('curso_id')
-                    ->numeric(),
-                TextInput::make('gestion_id')
-                    ->numeric(),
-                TextInput::make('estado'),
+                Select::make('gestion_id')
+                    ->relationship('gestion', 'anio',fn($query)=>$query->where('activo',true))
+                    ->default(fn()=>Gestion::where('activo',true)->first()?->id)
+                    ->required(),
+                Select::make('beneficiario_id')
+                    ->label('Beneficiario')
+                    ->relationship('beneficiario', 'nombre',
+                        fn ($query) => $query->whereDoesntHave('gestiones', function ($q) {
+                            $q->where('curso_id', $this->getOwnerRecord()->id);
+                        }))
+                    ->searchable()
+                    ->required(),
+                Select::make('curso_id')
+                    ->label('Curso')
+                    ->relationship('curso','nombre',fn($query)=>$query->where('colegio_id',$this->getOwnerRecord()->id)),
+
+                Select::make('estado')
+                    ->options([
+                        'activo' => 'Activo',
+                        'retirado' => 'Retirado',
+                    ])
+                    ->default('activo'),
             ]);
     }
 

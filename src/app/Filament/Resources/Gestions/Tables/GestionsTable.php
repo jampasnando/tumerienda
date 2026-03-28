@@ -18,7 +18,7 @@ class GestionsTable
             ->columns([
                 TextColumn::make('anio')
                 ->label('Año'),
-                TextColumn::make('activo')
+                ToggleColumn::make('activo')
             ])
             ->filters([
                 //

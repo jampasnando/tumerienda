@@ -21,6 +21,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rule;
@@ -29,7 +30,13 @@ use Illuminate\Validation\Rules\Unique;
 class GestionesRelationManager extends RelationManager
 {
     protected static string $relationship = 'gestiones';
-    protected static ?string $recordTitleAttribute = 'titulo';
+    // protected static ?string $recordTitleAttribute = 'titulo';
+    protected static ?string $title='Inscripciones';
+    public function getTableHeading(): string|Htmlable|null
+    {
+        return 'INSCRIPCIONES';
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -100,8 +107,9 @@ class GestionesRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                CreateAction::make()
+                ->label('Inscribir...'),
+                // AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
