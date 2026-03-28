@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Beneficiarios\RelationManagers;
 
+use App\Models\Entrega;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -28,30 +29,38 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubscripcionesRelationManager extends RelationManager
 {
     protected static string $relationship = 'subscripciones';
+    protected static ?string $title='Suscripciones';
+    public function getTableHeading(): string
+    {
+        return 'SUSCRIPCIONES';
+    }
+
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Select::make('tutor_id')
+               Select::make('tutor_id')
                     ->relationship('tutor', 'nombre')
                     ->required(),
 
-                Select::make('menu_id')
+               Select::make('menu_id')
                     ->relationship('menu', 'nombre')
                     ->required(),
 
-                Select::make('gestion_id')
+               Select::make('gestion_id')
                     ->relationship('gestion', 'anio')
+                    ->default(fn () => \App\Models\Gestion::where('activo', true)->first()?->id)
                     ->required(),
 
-                DatePicker::make('fecha_inicio')
+               DatePicker::make('fecha_inicio')
                     ->required(),
 
-                DatePicker::make('fecha_fin')
-                    ->required(),
+               DatePicker::make('fecha_fin')
+                    ->required()
+                    ->after('fecha_inicio'),
 
-                Select::make('estado')
+               Select::make('estado')
                     ->options([
                         'activo' => 'Activo',
                         'cancelado' => 'Cancelado',
@@ -73,6 +82,19 @@ class SubscripcionesRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
+                    // ->after(function ($record) {
+                    //     $inicio = \Carbon\Carbon::parse($record->fecha_inicio);
+                    //     $fin = \Carbon\Carbon::parse($record->fecha_fin);
+
+                    //     for ($fecha = $inicio->copy(); $fecha->lte($fin); $fecha->addDay()) {
+                    //         if ($fecha->isWeekend()) continue;
+                    //         Entrega::create([
+                    //             'subscripcion_id' => $record->id,
+                    //             'fecha' => $fecha,
+                    //             'estado' => 'pendiente',
+                    //         ]);
+                    //     }
+                    // }),
                 // AssociateAction::make(),
             ])
             ->recordActions([

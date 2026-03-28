@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Entrega;
 use App\Models\Menu;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -39,5 +40,9 @@ class Subscripcion extends Model
     public function gestion()
     {
         return $this->belongsTo(Gestion::class);
+    }
+    public function entregas()
+    {
+        return $this->hasMany(Entrega::class);
     }
 }
