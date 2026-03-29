@@ -33,4 +33,15 @@ class Beneficiario extends Model
     {
         return $this->hasMany(Subscripcion::class);
     }
+    public function tutorActivo()
+    {
+        return $this->belongsToMany(
+            Tutor::class,
+            'beneficiario_tutor',
+            'beneficiario_id',
+            'tutor_id'
+        )
+        ->wherePivot('estado', 'activo')
+        ->limit(1);
+    }
 }

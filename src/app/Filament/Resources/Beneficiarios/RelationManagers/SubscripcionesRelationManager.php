@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Beneficiarios\RelationManagers;
 
+use App\Models\Beneficiario;
 use App\Models\Entrega;
+use App\Models\Gestion;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -16,6 +18,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -29,10 +32,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubscripcionesRelationManager extends RelationManager
 {
     protected static string $relationship = 'subscripciones';
-    protected static ?string $title='Suscripciones';
+    protected static ?string $title='Menus';
     public function getTableHeading(): string
     {
-        return 'SUSCRIPCIONES';
+        return 'MENUS';
     }
 
 
@@ -40,17 +43,19 @@ class SubscripcionesRelationManager extends RelationManager
     {
         return $schema
             ->components([
-               Select::make('tutor_id')
-                    ->relationship('tutor', 'nombre')
-                    ->required(),
-
+               Hidden::make('tutor_id')
+                    ->default(fn () =>
+                        $this->getOwnerRecord()
+                            ->tutorActivo()
+                            ->first()?->id
+                    ),
                Select::make('menu_id')
                     ->relationship('menu', 'nombre')
                     ->required(),
 
                Select::make('gestion_id')
                     ->relationship('gestion', 'anio')
-                    ->default(fn () => \App\Models\Gestion::where('activo', true)->first()?->id)
+                    ->default(fn () => Gestion::where('activo', true)->first()?->id)
                     ->required(),
 
                DatePicker::make('fecha_inicio')
@@ -87,7 +92,8 @@ class SubscripcionesRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->label('Suscribir a menu'),
                     // ->after(function ($record) {
                     //     $inicio = \Carbon\Carbon::parse($record->fecha_inicio);
                     //     $fin = \Carbon\Carbon::parse($record->fecha_fin);

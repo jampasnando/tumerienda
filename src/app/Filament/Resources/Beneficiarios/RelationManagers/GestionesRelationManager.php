@@ -95,7 +95,8 @@ class GestionesRelationManager extends RelationManager
 
                 TextColumn::make('curso.nombre')
                     ->label('Curso'),
-
+                TextColumn::make('beneficiario.tutorActivo.nombre')
+                    ->label('Tutor'),
                 TextColumn::make('estado')
                     ->badge()
                     ->colors([
@@ -127,6 +128,7 @@ class GestionesRelationManager extends RelationManager
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query
+                ->with(['beneficiario.tutorActivo'])
                 ->withoutGlobalScopes([
                     SoftDeletingScope::class,
                 ]));

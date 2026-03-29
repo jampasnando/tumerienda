@@ -6,6 +6,7 @@ use App\Models\BeneficiarioTutor;
 use App\Models\Gestion;
 use App\Models\Menu;
 use App\Models\Subscripcion;
+use Filament\Actions\Action;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -39,6 +40,37 @@ class BeneficiariosGestionRelationManager extends RelationManager
     public function getTableHeading(): string|Htmlable|null
     {
         return 'Beneficiarios Gestión: '.Gestion::where('activo',true)->first()?->anio;
+    }
+    protected function crearSubscripcion($record, array $data, $tutores)
+    {
+        $beneficiarioId = $record->beneficiario_id;
+
+        $tutor = $tutores[$beneficiarioId] ?? null;
+
+        if (!$tutor) return;
+
+        $existe = Subscripcion::where('beneficiario_id', $beneficiarioId)
+            ->where('menu_id', $data['menu_id'])
+            ->where('estado', 'activo')
+            ->where(function ($q) use ($data) {
+                $q->whereBetween('fecha_inicio', [$data['fecha_inicio'], $data['fecha_fin']])
+                ->orWhereBetween('fecha_fin', [$data['fecha_inicio'], $data['fecha_fin']]);
+            })
+            ->exists();
+
+        if ($existe) return;
+
+        Subscripcion::create([
+            'beneficiario_id' => $beneficiarioId,
+            'tutor_id' => $tutor->tutor_id,
+            'menu_id' => $data['menu_id'],
+            'gestion_id' => $record->gestion_id,
+            'colegio_id' => $record->colegio_id,
+            'curso_id' => $record->curso_id,
+            'fecha_inicio' => $data['fecha_inicio'],
+            'fecha_fin' => $data['fecha_fin'],
+            'estado' => $data['estado'],
+        ]);
     }
     public function form(Schema $schema): Schema
     {
@@ -83,7 +115,11 @@ class BeneficiariosGestionRelationManager extends RelationManager
                 ]),
 
             TextColumn::make('estado')
-                ->badge(),
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'activo' => 'success',
+                    'inactivo' => 'danger',
+                })
         ])
         // ->headerActions([])
         // ->actions([])
@@ -97,6 +133,39 @@ class BeneficiariosGestionRelationManager extends RelationManager
                 // AssociateAction::make(),
             ])
             ->recordActions([
+                Action::make('asignarMenu')
+                    ->label('Asignar menú')
+                    ->icon('heroicon-o-cake')
+                    ->color('success')
+                    ->schema([
+                        Select::make('menu_id')
+                            ->options(Menu::pluck('nombre', 'id'))
+                            ->required(),
+
+                        DatePicker::make('fecha_inicio')->required(),
+                        DatePicker::make('fecha_fin')->required(),
+
+                        Select::make('estado')
+                            ->options([
+                                'activo' => 'Activo',
+                                'cancelado' => 'Cancelado',
+                            ])
+                            ->default('activo')
+                            ->required(),
+                    ])
+
+                    ->action(function ($record, array $data) {
+
+                        DB::transaction(function () use ($record, $data) {
+
+                            $tutores = BeneficiarioTutor::where('beneficiario_id', $record->beneficiario_id)
+                                ->where('estado', 'activo')
+                                ->get()
+                                ->keyBy('beneficiario_id');
+
+                            $this->crearSubscripcion($record, $data, $tutores);
+                        });
+                    }),
                 EditAction::make(),
                 // DissociateAction::make(),
                 DeleteAction::make(),
