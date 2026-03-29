@@ -19,7 +19,7 @@ class Tutor extends Model
     ];
     public function beneficiarios()
     {
-        return $this->belongsToMany(Beneficiario::class, 'beneficiario_tutor')
+        return $this->belongsToMany(Beneficiario::class, 'beneficiario_tutor','tutor_id','beneficiario_id')
             ->withPivot(['tipo', 'estado'])
             ->withTimestamps();
     }

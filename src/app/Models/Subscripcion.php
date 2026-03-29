@@ -20,6 +20,8 @@ class Subscripcion extends Model
         'fecha_inicio',
         'fecha_fin',
         'estado',
+        'colegio_id',
+        'curso_id'
     ];
 
     public function beneficiario()

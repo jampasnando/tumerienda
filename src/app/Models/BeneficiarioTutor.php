@@ -9,7 +9,7 @@ class BeneficiarioTutor extends Model
 {
     use SoftDeletes;
 
-    // protected $table='beneficiario_tutor';
+    protected $table='beneficiario_tutor';
 
     protected $fillable = [
         'beneficiario_id',

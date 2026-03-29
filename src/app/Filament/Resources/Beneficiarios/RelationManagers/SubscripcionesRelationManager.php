@@ -76,6 +76,12 @@ class SubscripcionesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id')
                     ->searchable(),
+                TextColumn::make('menu.nombre')
+                    ->label('Menu'),
+                TextColumn::make('fecha_inicio')
+                    ->date(),
+                TextColumn::make('fecha_fin')
+                    ->date(),
             ])
             ->filters([
                 TrashedFilter::make(),
