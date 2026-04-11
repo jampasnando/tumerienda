@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BeneficiarioTutor;
 use App\Models\Subscripcion;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,47 @@ class SubscripcionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'beneficiario_id' => 'required',
+            'menu_id' => 'required',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date',
+        ]);
+
+        $user = $request->user();
+
+        // 🔥 obtener tutor del usuario
+        $tutorId = $user->tutor_id;
+
+        // 🔥 obtener relación activa
+        $rel = BeneficiarioTutor::where('beneficiario_id', $request->beneficiario_id)
+            ->where('tutor_id', $tutorId)
+            ->where('estado', 'activo')
+            ->first();
+
+        if (!$rel) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        // 🔥 obtener gestion/curso/colegio desde beneficiario_gestion
+        $bg = \App\Models\BeneficiarioGestion::where('beneficiario_id', $request->beneficiario_id)
+            ->where('estado', 'activo')
+            ->first();
+
+        // 🚀 crear subscripción
+        $sub = Subscripcion::create([
+            'beneficiario_id' => $request->beneficiario_id,
+            'tutor_id' => $tutorId,
+            'menu_id' => $request->menu_id,
+            'gestion_id' => $bg->gestion_id,
+            'colegio_id' => $bg->colegio_id,
+            'curso_id' => $bg->curso_id,
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_fin' => $request->fecha_fin,
+            'estado' => 'activo',
+        ]);
+
+        return $sub;
     }
 
     /**

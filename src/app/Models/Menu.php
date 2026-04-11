@@ -15,7 +15,9 @@ class Menu extends Model
         'costo',
         'precio',
         'foto',
-        'activo'
+        'activo',
+        // 'fechainicio',
+        // 'fechafin'
 
     ];
 }

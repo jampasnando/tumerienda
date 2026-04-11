@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Menus\Schemas;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -20,8 +21,11 @@ class MenuForm
                     ->columnSpanFull(),
                 TextInput::make('costo')
                     ->numeric(),
-                TextInput::make('precio')
-                    ->numeric(),
+                TextInput::make('precio'),
+                DatePicker::make('fechainicio')
+                    ->label('Fecha Incio'),
+                DatePicker::make('fechafin')
+                    ->label('Fecha Fin'),
                 Toggle::make('activo'),
                 FileUpload::make('foto')
                     ->disk('public')
