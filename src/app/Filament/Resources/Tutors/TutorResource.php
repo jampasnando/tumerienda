@@ -6,17 +6,17 @@ use App\Filament\Resources\Tutors\Pages\CreateTutor;
 use App\Filament\Resources\Tutors\Pages\EditTutor;
 use App\Filament\Resources\Tutors\Pages\ListTutors;
 use App\Filament\Resources\Tutors\Pages\ViewTutor;
-use App\Filament\Resources\Tutors\RelationManagers\BeneficiariosRelationManager;
 use App\Filament\Resources\Tutors\Schemas\TutorForm;
 use App\Filament\Resources\Tutors\Schemas\TutorInfolist;
 use App\Filament\Resources\Tutors\Tables\TutorsTable;
 use App\Models\Tutor;
 use BackedEnum;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TutorResource extends Resource
 {
@@ -24,9 +24,9 @@ class TutorResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'nombre';
-    protected static ?string $label="Tutor";
-    protected static ?string $pluralLabel="Tutores";
+    protected static ?string $recordTitleAttribute = 'tutor';
+    protected static ?string $label = 'Padre/Madre/Tutor';
+    protected static ?string $pluralLabel = 'Padres';
 
     public static function form(Schema $schema): Schema
     {
@@ -46,7 +46,7 @@ class TutorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\BeneficiariosRelationManager::class
+                RelationManagers\BeneficiariosRelationManager::class,
         ];
     }
 
@@ -58,5 +58,13 @@ class TutorResource extends Resource
             'view' => ViewTutor::route('/{record}'),
             'edit' => EditTutor::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

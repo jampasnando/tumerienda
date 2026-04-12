@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Menus\Schemas;
 
 use App\Models\Menu;
 use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RichTextEntry;
 use Filament\Schemas\Schema;
 
 class MenuInfolist
@@ -37,9 +37,16 @@ class MenuInfolist
                 TextEntry::make('deleted_at')
                     ->dateTime()
                     ->visible(fn (Menu $record): bool => $record->trashed()),
-                ImageEntry::make('foto')
+                TextEntry::make('foto')
+                    ->placeholder('-'),
+                TextEntry::make('ingredientes')
+                    ->markdown()
                     ->placeholder('-')
-                    ->disk('public'),
+                    ->columnSpanFull(),
+                TextEntry::make('preparacion')
+                    ->placeholder('-')
+                    ->markdown()
+                    ->columnSpanFull(),
             ]);
     }
 }

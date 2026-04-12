@@ -12,36 +12,29 @@ class Beneficiario extends Model
         'nombre',
         'fechanac',
         'genero',
-        'codigo',
         'comentarios'
     ];
-    public function tutors()
-    {
-        return $this->belongsToMany(Tutor::class, 'beneficiario_tutor','beneficiario_id','tutor_id')
-            ->withPivot(['tipo', 'estado'])
-            ->withTimestamps();
-    }
-    public function beneficiariotutors()
-    {
-        return $this->hasMany(BeneficiarioTutor::class);
-    }
-    public function gestiones()
-    {
-        return $this->hasMany(BeneficiarioGestion::class);
-    }
-    public function subscripciones()
-    {
-        return $this->hasMany(Subscripcion::class);
-    }
-    public function tutorActivo()
-    {
-        return $this->belongsToMany(
-            Tutor::class,
-            'beneficiario_tutor',
-            'beneficiario_id',
-            'tutor_id'
-        )
-        ->wherePivot('estado', 'activo')
-        ->limit(1);
-    }
+    public function colegios()
+{
+    return $this->hasMany(\App\Models\BeneficiarioColegio::class);
+}
+
+public function tutores()
+{
+    return $this->hasMany(\App\Models\BeneficiarioTutor::class);
+}
+
+public function colegioActivo()
+{
+    return $this->hasOne(\App\Models\BeneficiarioColegio::class)
+        ->where('activo', 1);
+        // ->latestOfMany();
+}
+
+public function tutorActivo()
+{
+    return $this->hasOne(\App\Models\BeneficiarioTutor::class)
+        ->where('activo', true)
+        ->latestOfMany();
+}
 }

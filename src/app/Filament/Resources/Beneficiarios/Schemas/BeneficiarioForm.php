@@ -7,7 +7,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-use Laravel\Pail\Options;
 
 class BeneficiarioForm
 {
@@ -19,10 +18,9 @@ class BeneficiarioForm
                 DatePicker::make('fechanac'),
                 Select::make('genero')
                     ->options([
-                        'masculino'=>'Masculino',
-                        'femenino'=>'Femenino'
+                        'masculino' => 'Masculino',
+                        'femenino' => 'Femenino',
                     ]),
-                TextInput::make('codigo'),
                 Textarea::make('comentarios')
                     ->columnSpanFull(),
             ]);

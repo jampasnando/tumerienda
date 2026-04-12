@@ -16,8 +16,15 @@ class Menu extends Model
         'precio',
         'foto',
         'activo',
+        'ingredientes',
+        'preparacion'
+
         // 'fechainicio',
         // 'fechafin'
 
     ];
+    public function ofertas()
+{
+    return $this->belongsToMany(Oferta::class, 'menu_oferta', 'menu_id', 'oferta_id');
+}
 }

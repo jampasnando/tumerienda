@@ -24,8 +24,8 @@ class BeneficiarioResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'nombre';
-    protected static string $relationship = 'tutores';
+    protected static ?string $recordTitleAttribute = 'beneficiario';
+
     public static function form(Schema $schema): Schema
     {
         return BeneficiarioForm::configure($schema);
@@ -44,8 +44,8 @@ class BeneficiarioResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\GestionesRelationManager::class,
-            RelationManagers\SubscripcionesRelationManager::class,
+            RelationManagers\ColegiosRelationManager::class,
+            RelationManagers\TutoresRelationManager::class,
         ];
     }
 
@@ -59,11 +59,11 @@ class BeneficiarioResource extends Resource
         ];
     }
 
-    // public static function getRecordRouteBindingEloquentQuery(): Builder
-    // {
-    //     return parent::getRecordRouteBindingEloquentQuery()
-    //         ->withoutGlobalScopes([
-    //             SoftDeletingScope::class,
-    //         ]);
-    // }
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 }

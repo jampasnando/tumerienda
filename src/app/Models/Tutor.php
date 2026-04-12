@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Tutor extends Model
 {
     use SoftDeletes;
+    // protected $table='tutores';
     protected $fillable = [
         'nombre',
         'ci',
@@ -18,13 +19,7 @@ class Tutor extends Model
         'comentarios'
     ];
     public function beneficiarios()
-    {
-        return $this->belongsToMany(Beneficiario::class, 'beneficiario_tutor','tutor_id','beneficiario_id')
-            ->withPivot(['tipo', 'estado'])
-            ->withTimestamps();
-    }
-    public function beneficiariotutores()
-    {
-        $this->hasMany(Beneficiario::class);
-    }
+{
+    return $this->hasMany(\App\Models\BeneficiarioTutor::class);
+}
 }

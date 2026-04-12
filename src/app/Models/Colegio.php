@@ -17,11 +17,10 @@ class Colegio extends Model
         'latitud',
         'longitud'
     ];
-    public function cursos(){
-        return $this->hasMany(Curso::class);
-    }
-    public function beneficiariosGestion()
+    public function beneficiarios()
     {
-        return $this->hasMany(BeneficiarioGestion::class);
+        return $this->belongsToMany(Beneficiario::class, 'beneficiario_colegio')
+            ->withPivot(['id', 'activo', 'tutor_id', 'codigo'])
+            ->withTimestamps();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Menus\Schemas;
 
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -17,23 +16,25 @@ class MenuForm
         return $schema
             ->components([
                 TextInput::make('nombre'),
-                RichEditor::make('descripcion')
+                Toggle::make('activo')
+                    ->default(true),
+                Textarea::make('descripcion')
                     ->columnSpanFull(),
                 TextInput::make('costo')
                     ->numeric(),
-                TextInput::make('precio'),
-                DatePicker::make('fechainicio')
-                    ->label('Fecha Incio'),
-                DatePicker::make('fechafin')
-                    ->label('Fecha Fin'),
-                Toggle::make('activo'),
+                TextInput::make('precio')
+                    ->numeric(),
                 FileUpload::make('foto')
                     ->disk('public')
-                    ->directory('menu')
+                    ->image()
                     ->downloadable()
                     ->imageEditor()
-                    ->image()
                     ->previewable(),
-            ]);
+                RichEditor::make('ingredientes')
+                    ->columnSpanFull(),
+                RichEditor::make('preparacion')
+                    ->columnSpanFull(),
+            ])
+            ->columns(2);
     }
 }

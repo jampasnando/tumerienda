@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\Beneficiarios\Tables;
+namespace App\Filament\Resources\Ofertas\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class BeneficiariosTable
+class OfertasTable
 {
     public static function configure(Table $table): Table
     {
@@ -20,16 +18,15 @@ class BeneficiariosTable
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),
-                TextColumn::make('fechanac')
+                TextColumn::make('fecha_inicio')
                     ->date()
                     ->sortable(),
-                TextColumn::make('genero')
-                    ->searchable(),
+                TextColumn::make('fecha_fin')
+                    ->date()
+                    ->sortable(),
+                IconColumn::make('activo')
+                    ->boolean(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -37,9 +34,13 @@ class BeneficiariosTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                TrashedFilter::make(),
+                //
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -48,8 +49,6 @@ class BeneficiariosTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

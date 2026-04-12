@@ -11,11 +11,12 @@ use App\Filament\Resources\Colegios\Schemas\ColegioInfolist;
 use App\Filament\Resources\Colegios\Tables\ColegiosTable;
 use App\Models\Colegio;
 use BackedEnum;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ColegioResource extends Resource
 {
@@ -43,8 +44,7 @@ class ColegioResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CursosRelationManager::class,
-            RelationManagers\BeneficiariosGestionRelationManager::class
+            //
         ];
     }
 
@@ -56,5 +56,13 @@ class ColegioResource extends Resource
             'view' => ViewColegio::route('/{record}'),
             'edit' => EditColegio::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

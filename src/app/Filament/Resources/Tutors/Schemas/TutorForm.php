@@ -22,8 +22,8 @@ class TutorForm
                 TextInput::make('celular'),
                 Select::make('genero')
                     ->options([
-                        'HOMBRE'=>'HOMBRE',
-                        'MUJER'=>'MUJER'
+                        'masculino' => 'Masculino',
+                        'femenino' => 'Femenino',
                     ]),
                 Textarea::make('comentarios')
                     ->columnSpanFull(),

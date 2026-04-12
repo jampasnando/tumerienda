@@ -15,14 +15,16 @@ class BeneficiarioTutor extends Model
         'beneficiario_id',
         'tutor_id',
         'tipo',
-        'estado'
+        'activo'
     ];
-    public function beneficiario()
-    {
-        $this->belongsTo(Beneficiario::class);
-    }
-    public function tutores()
-    {
-        $this->belongsTo(Tutor::class);
-    }
+
+    public function tutor()
+{
+    return $this->belongsTo(\App\Models\Tutor::class);
+}
+
+public function beneficiario()
+{
+    return $this->belongsTo(\App\Models\Beneficiario::class);
+}
 }
