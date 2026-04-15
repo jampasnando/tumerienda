@@ -27,7 +27,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class IngredientesMenuRelationManagerRelationManager extends RelationManager
 {
     protected static string $relationship = 'ingredientesMenu';
+
     protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $ingrediente = \App\Models\Ingrediente::find($data['ingrediente_id']);
+
+        $data['costo'] = ($data['cantidad'] ?? 0) * ($ingrediente->costo_unitario ?? 0);
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
     {
         $ingrediente = \App\Models\Ingrediente::find($data['ingrediente_id']);
 
@@ -58,7 +68,7 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
                 )
                 ->searchable()
                 ->reactive()
-                ->afterStateUpdated(function ($state, callable $set) {
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
 
                     $ing = \App\Models\Ingrediente::find($state);
 
@@ -67,14 +77,42 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
                         $set('unidad', $ing->unidad);
                     }
 
+                    $this->updateCosto($set, $get);
+
                 })
                 ->required(),
 
                 TextInput::make('cantidad')
                     ->numeric()
                     ->required()
-                    ->default(1),
+                    ->default(1)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $this->updateCosto($set, $get);
+                    }),
+
+                TextInput::make('costo')
+                    ->label('Costo (Bs)')
+                    ->numeric()
+                    ->disabled()
+                    ->dehydrated()
+                    ->default(0),
             ]);
+    }
+
+    private function updateCosto(callable $set, callable $get): void
+    {
+        $ingredienteId = $get('ingrediente_id');
+        $cantidad = $get('cantidad') ?? 0;
+
+        if ($ingredienteId) {
+            $ing = \App\Models\Ingrediente::find($ingredienteId);
+            if ($ing) {
+                $set('costo', $cantidad * $ing->costo_unitario);
+            }
+        } else {
+            $set('costo', 0);
+        }
     }
 
     public function table(Table $table): Table

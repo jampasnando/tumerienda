@@ -13,7 +13,6 @@ class Menu extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'costo',
         'precio',
         'foto',
         'activo',

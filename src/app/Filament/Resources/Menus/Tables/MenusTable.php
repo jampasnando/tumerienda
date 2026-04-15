@@ -22,7 +22,11 @@ class MenusTable
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),
-                TextColumn::make('costo')
+                // TextColumn::make('costo')
+                //     ->numeric()
+                //     ->sortable(),
+                TextColumn::make('costo_total')
+                    ->label('Costo')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('precio')
@@ -46,10 +50,7 @@ class MenusTable
                     ->disk('public')
                     ->url(fn ($record) => $record->foto ? asset('storage/' . $record->foto) : null)
                     ->openUrlInNewTab(),
-                TextColumn::make('costo_total')
-                    ->label('Costo total')
-                    ->numeric()
-                    ->sortable()
+
             ])
             ->filters([
                 TrashedFilter::make(),

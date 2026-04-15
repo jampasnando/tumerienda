@@ -19,9 +19,6 @@ class MenuInfolist
                 TextEntry::make('descripcion')
                     ->placeholder('-')
                     ->columnSpanFull(),
-                TextEntry::make('costo')
-                    ->numeric()
-                    ->placeholder('-'),
                 TextEntry::make('precio')
                     ->numeric()
                     ->placeholder('-'),

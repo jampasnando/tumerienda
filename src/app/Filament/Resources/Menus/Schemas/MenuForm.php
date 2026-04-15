@@ -15,13 +15,12 @@ class MenuForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre'),
+                TextInput::make('nombre')
+                    ->required(),
                 Toggle::make('activo')
                     ->default(true),
                 Textarea::make('descripcion')
                     ->columnSpanFull(),
-                TextInput::make('costo')
-                    ->numeric(),
                 TextInput::make('precio')
                     ->numeric(),
                 FileUpload::make('foto')
