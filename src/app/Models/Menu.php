@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Ingrediente;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -16,7 +17,6 @@ class Menu extends Model
         'precio',
         'foto',
         'activo',
-        'ingredientes',
         'preparacion'
 
         // 'fechainicio',
@@ -27,4 +27,13 @@ class Menu extends Model
 {
     return $this->belongsToMany(Oferta::class, 'menu_oferta', 'menu_id', 'oferta_id');
 }
+public function ingredientesMenu()
+{
+    return $this->hasMany(\App\Models\IngredienteMenu::class);
+}
+public function getCostoTotalAttribute()
+{
+    return $this->ingredientesMenu->sum('costo');
+}
+
 }

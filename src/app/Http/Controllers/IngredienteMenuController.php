@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Colegio;
+use App\Models\IngredienteMenu;
 use Illuminate\Http\Request;
 
-class ColegioController extends Controller
+class IngredienteMenuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return response()->json([
-            'status' => 'success',
-            'colegios' => Colegio::all(),
-        ]);
+        //
     }
 
     /**
@@ -37,7 +34,7 @@ class ColegioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Colegio $colegio)
+    public function show(IngredienteMenu $ingredienteMenu)
     {
         //
     }
@@ -45,7 +42,7 @@ class ColegioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Colegio $colegio)
+    public function edit(IngredienteMenu $ingredienteMenu)
     {
         //
     }
@@ -53,7 +50,7 @@ class ColegioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Colegio $colegio)
+    public function update(Request $request, IngredienteMenu $ingredienteMenu)
     {
         //
     }
@@ -61,7 +58,7 @@ class ColegioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Colegio $colegio)
+    public function destroy(IngredienteMenu $ingredienteMenu)
     {
         //
     }

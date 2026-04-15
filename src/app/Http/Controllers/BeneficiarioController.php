@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CodigoColegio;
 use App\Models\Beneficiario;
+use App\Models\BeneficiarioColegio;
 use App\Models\BeneficiarioGestion;
 use App\Models\BeneficiarioTutor;
+use App\Models\Colegio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BeneficiarioController extends Controller
 {
@@ -30,12 +34,12 @@ class BeneficiarioController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Datos recibidos para crear beneficiario: ', $request->all());
         $request->validate([
             'nombre' => 'required',
             'fechanac' => 'required',
-            'genero' => 'required',
             'colegio_id' => 'required',
-            'curso_id' => 'required',
+            'tutor_id' => 'required',
         ]);
 
         $user = $request->user();
@@ -43,30 +47,45 @@ class BeneficiarioController extends Controller
         // 🔹 1. Crear beneficiario
         $beneficiario = Beneficiario::create([
             'nombre' => $request->nombre,
-            'fechanac' => $request->fechanac,
+            'fechanac' => date('Y-m-d', strtotime($request->fechanac)),
             'genero' => $request->genero,
+            'comentarios' => $request->comentarios,
+            'activo' => true,
         ]);
 
         // 🔹 2. Relación tutor
         BeneficiarioTutor::create([
             'beneficiario_id' => $beneficiario->id,
-            'tutor_id' => $user->tutor_id,
+            'tutor_id' => $request->tutor_id,
             'tipo' => 'padre',
-            'estado' => 'activo',
+            'activo' => true,
         ]);
+        $colegio = Colegio::find($request->colegio_id);
 
-        // 🔹 3. Obtener gestión activa
-        $gestion = \App\Models\Gestion::where('activo', 1)->first();
-
-        // 🔹 4. Crear beneficiario_gestion
-        BeneficiarioGestion::create([
+        $codigo= CodigoColegio::generar(
+            $colegio->nombre,
+            $beneficiario->id
+        );
+        Log::info('Código generado para beneficiario: ' . $codigo);
+        BeneficiarioColegio::create([
             'beneficiario_id' => $beneficiario->id,
             'colegio_id' => $request->colegio_id,
-            'curso_id' => $request->curso_id,
-            'gestion_id' => $gestion->id,
-            'estado' => 'activo',
+            'activo' => true,
+            'tutor_id' => $request->tutor_id,
+            'codigo' => $codigo
         ]);
+        // // 🔹 3. Obtener gestión activa
+        // $gestion = \App\Models\Gestion::where('activo', 1)->first();
 
+        // // 🔹 4. Crear beneficiario_gestion
+        // BeneficiarioGestion::create([
+        //     'beneficiario_id' => $beneficiario->id,
+        //     'colegio_id' => $request->colegio_id,
+        //     'curso_id' => $request->curso_id,
+        //     'gestion_id' => $gestion->id,
+        //     'estado' => 'activo',
+        // ]);
+        
         return response()->json($beneficiario);
     }
 

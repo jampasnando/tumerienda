@@ -109,6 +109,7 @@ class TutoresRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
+                    ->label('Asignar Tutor')
                     ->after(function ($record, $data) {
 
                         if ($data['activo'] === true) {
@@ -120,7 +121,7 @@ class TutoresRelationManager extends RelationManager
                         }
 
                     }),
-                AssociateAction::make(),
+                // AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make()
@@ -135,14 +136,14 @@ class TutoresRelationManager extends RelationManager
                         }
 
                     }),
-                DissociateAction::make(),
+                // DissociateAction::make(),
                 DeleteAction::make(),
                 ForceDeleteAction::make(),
                 RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
+                    // DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),

@@ -46,6 +46,10 @@ class MenusTable
                     ->disk('public')
                     ->url(fn ($record) => $record->foto ? asset('storage/' . $record->foto) : null)
                     ->openUrlInNewTab(),
+                TextColumn::make('costo_total')
+                    ->label('Costo total')
+                    ->numeric()
+                    ->sortable()
             ])
             ->filters([
                 TrashedFilter::make(),

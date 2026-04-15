@@ -32,6 +32,7 @@ class ColegiosRelationManager extends RelationManager
             ->components([
                 Select::make('colegio_id')
                     ->relationship('colegio', 'nombre')
+                    ->preload()
                     ->searchable()
                     ->reactive()
                     ->required(),
@@ -79,7 +80,7 @@ class ColegiosRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Agregar Colegio')
+                    ->label('Asignar Colegio')
                     ->mutateDataUsing(function ($data) {
 
                         $colegio = Colegio::find($data['colegio_id']);

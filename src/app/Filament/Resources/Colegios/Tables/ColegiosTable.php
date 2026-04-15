@@ -18,6 +18,14 @@ class ColegiosTable
     {
         return $table
             ->columns([
+                TextColumn::make('nombre')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('direccion')
+                    ->limit(15)
+                    ->tooltip(fn($state) => $state)
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('telefono')
                     ->searchable(),
                 TextColumn::make('celular')

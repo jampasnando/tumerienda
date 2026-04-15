@@ -12,7 +12,10 @@ class Beneficiario extends Model
         'nombre',
         'fechanac',
         'genero',
-        'comentarios'
+        'comentarios',
+        'colegio_id',
+        'tutor_id',
+        'activo'
     ];
     public function colegios()
 {
@@ -36,5 +39,9 @@ public function tutorActivo()
     return $this->hasOne(\App\Models\BeneficiarioTutor::class)
         ->where('activo', true)
         ->latestOfMany();
+}
+public function beneficiariostutors()
+{
+    return $this->hasMany(\App\Models\BeneficiarioTutor::class);
 }
 }

@@ -1,30 +1,39 @@
 <?php
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Tutor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
+        // dd($request->all());
+        // $request->validate([
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:tutors',
+        //     'password' => 'required|min:6',
+        // ]);
+        // dd($request->all());
+        // Log::info('Datos recibidos para registro: ', $request->all());
+        $tutor = Tutor::create([
+            'nombre' => $request->nombre,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'ci' => $request->ci,
+            'direccion' => $request->direccion,
+            'telefono' => $request->telefono,
+            'celular' => $request->celular,
+            'genero' => '',
+            'comentarios' => '',
         ]);
-
-        $token = $user->createToken('app')->plainTextToken;
+        // dd($tutor);
+        $token = $tutor->createToken('app')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'tutor' => $tutor,
             'token' => $token
         ]);
     }
@@ -32,22 +41,23 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         // return 'login';
+        Log::info('Datos recibidos para login: ', $request->all());
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $tutor = Tutor::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! $tutor || ! Hash::check($request->password, $tutor->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $tutor->createToken('api-token')->plainTextToken;
 
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'tutor' => $tutor,
         ]);
     }
 }

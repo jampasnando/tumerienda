@@ -30,8 +30,6 @@ class MenuForm
                     ->downloadable()
                     ->imageEditor()
                     ->previewable(),
-                RichEditor::make('ingredientes')
-                    ->columnSpanFull(),
                 RichEditor::make('preparacion')
                     ->columnSpanFull(),
             ])
