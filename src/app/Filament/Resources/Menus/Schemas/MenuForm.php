@@ -25,6 +25,7 @@ class MenuForm
                     ->numeric(),
                 FileUpload::make('foto')
                     ->disk('public')
+                    ->directory('menu')
                     ->image()
                     ->downloadable()
                     ->imageEditor()
