@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class IngredientesTable
@@ -14,6 +15,13 @@ class IngredientesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultGroup('categoria')
+            ->groups([
+                    Group::make('categoria')
+                        ->collapsible()
+
+                ])
+            ->collapsedGroupsByDefault()
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),

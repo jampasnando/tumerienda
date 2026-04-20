@@ -19,7 +19,7 @@ class Suscripcion extends Model
         'fecha',
         'estado'
     ];
-
+    protected $dates = ['fecha'];
     public function beneficiario()
 {
     return $this->belongsTo(Beneficiario::class);

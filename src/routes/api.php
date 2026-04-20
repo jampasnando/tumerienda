@@ -7,7 +7,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\ColegioController;
-use App\Http\Controllers\SubscripcionController;
+use App\Http\Controllers\OfertaController;
+use App\Http\Controllers\SuscripcionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -50,4 +51,11 @@ Route::middleware('auth:sanctum')->get('/menus-activos', function () {
     return \App\Models\Menu::where('activo', true)->get();
 });
 
-Route::middleware('auth:sanctum')->post('/subscripciones', [SubscripcionController::class, 'store']);
+// Route::middleware('auth:sanctum')->post('/subscripciones', [SubscripcionController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/ofertas/activas', [OfertaController::class, 'activas']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/suscripciones', [SuscripcionController::class, 'store']);
+    Route::get('/suscripciones', [SuscripcionController::class, 'index']);
+
+});

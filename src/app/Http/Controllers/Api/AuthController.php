@@ -48,7 +48,7 @@ class AuthController extends Controller
         ]);
 
         $tutor = Tutor::where('email', $request->email)->first();
-
+        
         if (! $tutor || ! Hash::check($request->password, $tutor->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }

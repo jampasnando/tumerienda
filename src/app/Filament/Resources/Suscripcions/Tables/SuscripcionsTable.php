@@ -17,6 +17,7 @@ class SuscripcionsTable
             ->columns([
                 TextColumn::make('beneficiario.nombre')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('oferta.nombre')
                     ->numeric()

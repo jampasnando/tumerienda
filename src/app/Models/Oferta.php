@@ -19,6 +19,6 @@ class Oferta extends Model
 
     public function menus()
     {
-        return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id');
+        return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->wherePivotNull('deleted_at');;
     }
 }

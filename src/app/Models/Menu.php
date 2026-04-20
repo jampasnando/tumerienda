@@ -24,7 +24,7 @@ class Menu extends Model
     ];
     public function ofertas()
 {
-    return $this->belongsToMany(Oferta::class, 'menu_oferta', 'menu_id', 'oferta_id');
+    return $this->belongsToMany(Oferta::class, 'menu_oferta', 'menu_id', 'oferta_id')->wherePivotNull('deleted_at');;
 }
 public function ingredientesMenu()
 {
