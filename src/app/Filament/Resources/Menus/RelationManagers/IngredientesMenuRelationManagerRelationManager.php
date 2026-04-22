@@ -60,7 +60,7 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
                                 return [
                                     $item->id => $item->nombre
                                         . ' (' . $item->unidad
-                                        . ' - Bs ' . number_format($item->costo_unitario, 3) . ')'
+                                        . ' - Bs ' . number_format($item->costo_unitario, 2) . ')'
                                 ];
                             });
                         })

@@ -20,7 +20,10 @@ class MenusTable
     {
         return $table
             ->columns([
+                TextColumn::make('tipo')
+                    ->sortable(),
                 TextColumn::make('nombre')
+                    ->sortable()
                     ->searchable(),
                 // TextColumn::make('costo')
                 //     ->numeric()
@@ -29,10 +32,12 @@ class MenusTable
                     ->label('Costo')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('precio')
-                    ->numeric()
-                    ->sortable(),
+
+                // TextColumn::make('precio')
+                //     ->numeric()
+                //     ->sortable(),
                 IconColumn::make('activo')
+                    ->sortable()
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()

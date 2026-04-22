@@ -57,6 +57,7 @@ class MenusRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('nombre')
             ->columns([
+                TextColumn::make('tipo'),
                 TextColumn::make('nombre')
                     ->url(fn ($record) =>
                         MenuResource::getUrl('view', [
@@ -64,12 +65,13 @@ class MenusRelationManager extends RelationManager
                         ])
                     )
                     ->searchable(),
-                TextColumn::make('costo')
+                TextColumn::make('costo_total')
+                    ->label('Costo')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('precio')
-                    ->numeric()
-                    ->sortable(),
+                // TextColumn::make('precio')
+                //     ->numeric()
+                //     ->sortable(),
                 IconColumn::make('activo')
                     ->boolean(),
                 TextColumn::make('created_at')
