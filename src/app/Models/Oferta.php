@@ -11,14 +11,20 @@ class Oferta extends Model
     protected $table = 'ofertas';
 
     protected $fillable = [
-        'nombre',
-        'fecha_inicio',
-        'fecha_fin',
-        'activo'
+        // 'nombre',
+        // 'fecha_inicio',
+        // 'fecha_fin',
+        // 'activo',
+        'pack_id',
+        'fecha'
     ];
 
     public function menus()
     {
         return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->wherePivotNull('deleted_at');;
+    }
+    public function pack()
+    {
+        return $this->belongsTo(Pack::class);
     }
 }

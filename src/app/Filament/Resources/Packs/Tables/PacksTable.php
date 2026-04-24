@@ -1,39 +1,28 @@
 <?php
 
-namespace App\Filament\Resources\Ingredientes\Tables;
+namespace App\Filament\Resources\Packs\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
-class IngredientesTable
+class PacksTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultGroup('categoria')
-            ->groups([
-                    Group::make('categoria')
-                        ->collapsible()
-
-                ])
-            // ->collapsedGroupsByDefault()
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),
-                TextColumn::make('unidad')
+                TextColumn::make('descripcion')
+                    ->limit(20)
+                    ->tooltip('descripcion'),
+                TextColumn::make('precio')
                     ->searchable(),
-                TextColumn::make('costo_unitario')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('unidad_receta'),
-                TextColumn::make('equivalencia')
-                    ->numeric(),
-                TextColumn::make('categoria')
+                TextColumn::make('estado')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

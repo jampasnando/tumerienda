@@ -16,16 +16,18 @@ class OfertasTable
     {
         return $table
             ->columns([
-                TextColumn::make('nombre')
-                    ->searchable(),
-                TextColumn::make('fecha_inicio')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('fecha_fin')
-                    ->date()
-                    ->sortable(),
-                IconColumn::make('activo')
-                    ->boolean(),
+                // TextColumn::make('nombre')
+                //     ->searchable(),
+                // TextColumn::make('fecha_inicio')
+                //     ->date()
+                //     ->sortable(),
+                // TextColumn::make('fecha_fin')
+                //     ->date()
+                //     ->sortable(),
+                // IconColumn::make('activo')
+                //     ->boolean(),
+                TextColumn::make('pack.nombre'),
+                TextColumn::make('fecha'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

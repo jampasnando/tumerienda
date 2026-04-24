@@ -84,6 +84,17 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
 
                 TextInput::make('cantidad')
                     ->numeric()
+                    ->helperText(function (callable $get) {
+                        $ingredienteId = $get('ingrediente_id');
+
+                        if (!$ingredienteId) return null;
+
+                        $ingrediente = \App\Models\Ingrediente::find($ingredienteId);
+
+                        return $ingrediente
+                            ? 'Cantidad en ' . $ingrediente->unidad_receta
+                            : null;
+                    })
                     ->required()
                     ->default(1)
                     ->reactive()
@@ -108,7 +119,7 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
         if ($ingredienteId) {
             $ing = \App\Models\Ingrediente::find($ingredienteId);
             if ($ing) {
-                $set('costo', $cantidad * $ing->costo_unitario);
+                $set('costo', ($cantidad / $ing->equivalencia) * $ing->costo_unitario);
             }
         } else {
             $set('costo', 0);
@@ -125,7 +136,7 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
 
                 TextColumn::make('cantidad'),
 
-                TextColumn::make('ingrediente.unidad')
+                TextColumn::make('ingrediente.unidad_receta')
                     ->label('Unidad'),
 
                 TextColumn::make('costo_calculado')
@@ -137,7 +148,7 @@ class IngredientesMenuRelationManagerRelationManager extends RelationManager
                         }
 
                         return 'Bs ' . number_format(
-                            $record->cantidad * $record->ingrediente->costo_unitario,
+                            ($record->cantidad / $record->ingrediente->equivalencia) * $record->ingrediente->costo_unitario,
                             2
                         );
                     }),

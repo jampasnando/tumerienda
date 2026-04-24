@@ -14,6 +14,8 @@ class Ingrediente extends Model
         'unidad',
         'costo_unitario',
         'categoria',
+        'unidad_receta',
+        'equivalencia'
     ];
     public function ingredientesMenu()
     {

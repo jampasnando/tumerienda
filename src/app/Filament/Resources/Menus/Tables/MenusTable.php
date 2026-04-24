@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Menus\Tables;
 
+use DB;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -13,7 +15,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-
+use Illuminate\Database\Eloquent\Collection;
 class MenusTable
 {
     public static function configure(Table $table): Table
@@ -66,6 +68,27 @@ class MenusTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('sumarCostos')
+                        ->label('+ Sumar costos seleccionados')
+                        ->action(function (Collection $records) {
+
+                            $ids = $records->pluck('id');
+
+                            $total = DB::table('menus')
+                                ->whereIn('menus.id', $ids)
+                                ->join('ingrediente_menu', 'menus.id', '=', 'ingrediente_menu.menu_id')
+                                ->join('ingredientes', 'ingredientes.id', '=', 'ingrediente_menu.ingrediente_id')
+                                ->selectRaw('SUM((ingrediente_menu.cantidad / ingredientes.equivalencia) * ingredientes.costo_unitario) as total')
+                                ->value('total') ?? 0;
+
+                            \Filament\Notifications\Notification::make()
+                                ->title('Total seleccionado')
+                                ->body(
+                                        count($records) . ' menús → Bs ' . number_format($total, 2)
+                                    )
+                                ->success()
+                                ->send();
+                        }),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),

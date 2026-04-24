@@ -23,8 +23,8 @@ class IngredienteResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'nombre';
-
-    public static function form(Schema $schema): Schema
+    protected static ?string $label = 'Ingredientes/Insumos';
+    protected static ?string $pluralLabel = 'Ingredientes/Insumos';    public static function form(Schema $schema): Schema
     {
         return IngredienteForm::configure($schema);
     }

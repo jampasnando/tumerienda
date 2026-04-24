@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Ofertas\RelationManagers;
 
 use App\Filament\Resources\Menus\MenuResource;
 use Filament\Actions\AttachAction;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -26,7 +27,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use DB;
 
 class MenusRelationManager extends RelationManager
 {
@@ -111,6 +114,27 @@ class MenusRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('sumarCostos')
+                        ->label('+ Sumar costos seleccionados')
+                        ->action(function (Collection $records) {
+
+                            $ids = $records->pluck('id');
+
+                            $total = DB::table('menus')
+                                ->whereIn('menus.id', $ids)
+                                ->join('ingrediente_menu', 'menus.id', '=', 'ingrediente_menu.menu_id')
+                                ->join('ingredientes', 'ingredientes.id', '=', 'ingrediente_menu.ingrediente_id')
+                                ->selectRaw('SUM((ingrediente_menu.cantidad / ingredientes.equivalencia) * ingredientes.costo_unitario) as total')
+                                ->value('total') ?? 0;
+
+                            \Filament\Notifications\Notification::make()
+                                ->title('Total seleccionado')
+                                ->body(
+                                        count($records) . ' menús → Bs ' . number_format($total, 2)
+                                    )
+                                ->success()
+                                ->send();
+                        }),
                     DetachBulkAction::make(),
                     // DeleteBulkAction::make(),
                     // ForceDeleteBulkAction::make(),

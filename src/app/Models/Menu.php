@@ -33,7 +33,11 @@ public function ingredientesMenu()
 }
 public function getCostoTotalAttribute()
 {
-    return $this->ingredientesMenu->sum('costo');
+    return $this->ingredientesMenu()
+        ->join('ingredientes', 'ingredientes.id', '=', 'ingrediente_menu.ingrediente_id')
+        ->selectRaw('SUM((ingrediente_menu.cantidad / ingredientes.equivalencia) * ingredientes.costo_unitario) as total')
+        ->value('total') ?? 0;
+
 }
 
 }

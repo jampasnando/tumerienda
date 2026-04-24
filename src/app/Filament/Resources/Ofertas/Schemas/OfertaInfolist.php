@@ -13,17 +13,19 @@ class OfertaInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('nombre')
-                    ->placeholder('-'),
-                TextEntry::make('fecha_inicio')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('fecha_fin')
-                    ->date()
-                    ->placeholder('-'),
-                IconEntry::make('activo')
-                    ->boolean()
-                    ->placeholder('-'),
+                // TextEntry::make('nombre')
+                //     ->placeholder('-'),
+                // TextEntry::make('fecha_inicio')
+                //     ->date()
+                //     ->placeholder('-'),
+                // TextEntry::make('fecha_fin')
+                //     ->date()
+                //     ->placeholder('-'),
+                // IconEntry::make('activo')
+                //     ->boolean()
+                //     ->placeholder('-'),
+                TextEntry::make('pack.nombre'),
+                TextEntry::make('fecha'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

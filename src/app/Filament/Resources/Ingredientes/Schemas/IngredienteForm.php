@@ -12,10 +12,6 @@ class IngredienteForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre'),
-                TextInput::make('unidad'),
-                TextInput::make('costo_unitario')
-                    ->numeric(),
                 TextInput::make('categoria')
                     ->datalist(function () {
                         return Ingrediente::query()
@@ -24,6 +20,20 @@ class IngredienteForm
                             ->pluck('categoria')
                             ->toArray();
                     }),
-            ]);
+                TextInput::make('nombre'),
+                TextInput::make('unidad')
+                    ->reactive(),
+                TextInput::make('costo_unitario')
+                    ->label(fn($get) => "Costo de 1 {$get('unidad')}")
+                    ->numeric(),
+                TextInput::make('unidad_receta')
+                    ->label('Unidad en recetas')
+                    ->reactive(),
+                TextInput::make('equivalencia')
+                    ->numeric()
+                    ->label(fn ($get) => "Un {$get('unidad')} equivale a ??? {$get('unidad_receta')}"),
+
+            ])
+            ->columns(3);
     }
 }
