@@ -11,7 +11,8 @@ class Pack extends Model
     protected $fillable = [
         'nombre',
         'estado',
-        'precio'
+        'precio',
+        'descripcion'
     ];
     public function ofertas()
     {
