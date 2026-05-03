@@ -13,6 +13,6 @@ class Grupo extends Model
     ];
     public function menuOfertas()
     {
-        return $this->belongsToMany(MenuOferta::class);
+        return $this->hasMany(MenuOferta::class);
     }
 }

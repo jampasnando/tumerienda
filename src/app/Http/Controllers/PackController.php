@@ -65,16 +65,25 @@ class PackController extends Controller
     }
     public function abiertos()
     {
-        return Pack::with([
-            'ofertas' => function ($query) {
-                $query->select('id', 'pack_id', 'fecha');
-            },
-            'ofertas.menus' => function ($query) {
-                $query->select('menus.id', 'nombre','tipo','foto');
-            }
-        ])
-        ->where('estado', 'abierto')
-        ->select('id', 'nombre', 'estado','precio','descripcion','foto')
-        ->get();
+        // return Pack::with([
+        //     'ofertas' => function ($query) {
+        //         $query->select('id', 'pack_id', 'fecha');
+        //     },
+        //     'ofertas.menus' => function ($query) {
+        //         $query->select('menus.id', 'nombre','tipo','foto');
+        //     }
+        // ])
+        // ->where('estado', 'abierto')
+        // ->select('id', 'nombre', 'estado','precio','descripcion','foto')
+        // ->get();
+        $packs = Pack::where('estado', 'abierto')
+            ->with([
+                'ofertas',
+                'ofertas.menuOfertas.menu',
+                'ofertas.menuOfertas.grupo',
+            ])
+            ->get();
+
+        return response()->json($packs);
     }
 }

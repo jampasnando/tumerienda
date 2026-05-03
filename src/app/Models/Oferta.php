@@ -19,10 +19,11 @@ class Oferta extends Model
         'fecha'
     ];
 
-    // public function menus()
-    // {
-    //     return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->withPivot('grupo')->wherePivotNull('deleted_at');;
-    // }
+    public function menus()
+{
+        return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->withPivot('grupo_id')->wherePivotNull('deleted_at');;
+        // return $this->belongsToMany(Menu::class);
+    }
     public function menuOfertas()
     {
         return $this->hasMany(MenuOferta::class);

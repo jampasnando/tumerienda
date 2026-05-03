@@ -17,6 +17,6 @@ class Pack extends Model
     ];
     public function ofertas()
     {
-        return $this->hasMany(\App\Models\Oferta::class);
+        return $this->hasMany(Oferta::class);
     }
 }
