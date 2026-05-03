@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\CodigoColegio;
 use App\Models\Beneficiario;
 use App\Models\BeneficiarioColegio;
-use App\Models\BeneficiarioGestion;
+// use App\Models\BeneficiarioGestion;
 use App\Models\BeneficiarioTutor;
 use App\Models\Colegio;
 use Illuminate\Http\Request;
@@ -85,7 +85,7 @@ class BeneficiarioController extends Controller
         //     'gestion_id' => $gestion->id,
         //     'estado' => 'activo',
         // ]);
-        
+
         return response()->json($beneficiario);
     }
 

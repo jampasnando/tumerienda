@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Packs\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,13 +17,22 @@ class PackForm
                 TextInput::make('nombre'),
                 TextInput::make('precio')
                     ->numeric(),
-                Textarea::make('descripcion'),
+
+                FileUpload::make('foto')
+                    ->disk('public')
+                    ->directory('packs')
+                    ->image()
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
                 Select::make('estado')
                     ->options([
                         'cerrado' => 'Cerrado',
                         'abierto' => 'Abierto'
                     ])
                     ->default('cerrado'),
+                Textarea::make('descripcion')
+                    ->columnSpanFull(),
             ]);
     }
 }

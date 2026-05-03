@@ -12,7 +12,8 @@ class Pack extends Model
         'nombre',
         'estado',
         'precio',
-        'descripcion'
+        'descripcion',
+        'foto'
     ];
     public function ofertas()
     {

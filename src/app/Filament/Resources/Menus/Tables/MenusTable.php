@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Menus\Tables;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;

@@ -17,10 +17,13 @@ class Beneficiario extends Model
         'tutor_id',
         'activo'
     ];
-    public function colegios()
-{
-    return $this->hasMany(\App\Models\BeneficiarioColegio::class);
-}
+    public function beneficiarioColegios()
+    {
+        return $this->hasMany(BeneficiarioColegio::class);
+        // return $this->belongsToMany(Colegio::class,'beneficiario_colegio')
+        //     ->withPivot(['activo','codigo'])
+        //     ->withTimestamps();
+    }
 
 public function tutores()
 {
@@ -33,7 +36,13 @@ public function colegioActivo()
         ->where('activo', 1);
         // ->latestOfMany();
 }
-
+public function nombrecolegioActivo()
+{
+    return $this->hasOne(\App\Models\BeneficiarioColegio::class)
+        ->where('activo', 1)
+        ->with('colegio');
+        // ->latestOfMany();
+}
 public function tutorActivo()
 {
     return $this->hasOne(\App\Models\BeneficiarioTutor::class)

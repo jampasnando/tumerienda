@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-// use App\Models\Pack;
-use App\Models\Pack;
+use App\Models\Grupo;
 use Illuminate\Http\Request;
 
-class PackController extends Controller
+class GrupoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +34,7 @@ class PackController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Grupo $grupo)
     {
         //
     }
@@ -43,7 +42,7 @@ class PackController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Grupo $grupo)
     {
         //
     }
@@ -51,7 +50,7 @@ class PackController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Grupo $grupo)
     {
         //
     }
@@ -59,22 +58,8 @@ class PackController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Grupo $grupo)
     {
         //
-    }
-    public function abiertos()
-    {
-        return Pack::with([
-            'ofertas' => function ($query) {
-                $query->select('id', 'pack_id', 'fecha');
-            },
-            'ofertas.menus' => function ($query) {
-                $query->select('menus.id', 'nombre','tipo','foto');
-            }
-        ])
-        ->where('estado', 'abierto')
-        ->select('id', 'nombre', 'estado','precio','descripcion','foto')
-        ->get();
     }
 }

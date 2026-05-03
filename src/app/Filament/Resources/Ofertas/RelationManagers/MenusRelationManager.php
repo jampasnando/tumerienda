@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Ofertas\RelationManagers;
 
 use App\Filament\Resources\Menus\MenuResource;
+use App\Models\Grupo;
+use DB;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
@@ -16,6 +18,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -29,7 +32,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use DB;
 
 class MenusRelationManager extends RelationManager
 {
@@ -60,6 +62,8 @@ class MenusRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('nombre')
             ->columns([
+                TextColumn::make('pivot.grupo')
+                    ->label('Grupo'),
                 TextColumn::make('tipo'),
                 TextColumn::make('nombre')
                     ->url(fn ($record) =>
@@ -95,6 +99,7 @@ class MenusRelationManager extends RelationManager
                     ->openUrlInNewTab()
                     ->circular()
                     ->searchable(),
+
             ])
             ->filters([
                 TrashedFilter::make(),
@@ -103,7 +108,14 @@ class MenusRelationManager extends RelationManager
                 // CreateAction::make(),
                 AttachAction::make()
                     ->preloadRecordSelect()
-                    ->label('Agregar menú'),
+                    ->label('Agregar menú')
+                    ->form(fn (AttachAction $action): array => [
+                        $action->getRecordSelect(), // selector de menú
+                        Select::make('grupo')
+                            ->required()
+                            ->label('Grupo')
+                            ->options(fn()=>Grupo::all()->pluck('nombre','id')),
+                    ]),
             ])
             ->recordActions([
                 // EditAction::make(),
