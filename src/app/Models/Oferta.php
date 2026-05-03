@@ -19,9 +19,13 @@ class Oferta extends Model
         'fecha'
     ];
 
-    public function menus()
+    // public function menus()
+    // {
+    //     return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->withPivot('grupo')->wherePivotNull('deleted_at');;
+    // }
+    public function menuOfertas()
     {
-        return $this->belongsToMany(Menu::class,'menu_oferta', 'oferta_id', 'menu_id')->withPivot('grupo')->wherePivotNull('deleted_at');;
+        return $this->hasMany(MenuOferta::class);
     }
     public function pack()
     {

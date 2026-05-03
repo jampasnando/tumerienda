@@ -11,4 +11,8 @@ class Grupo extends Model
     protected $fillable = [
         'nombre'
     ];
+    public function menuOfertas()
+    {
+        return $this->belongsToMany(MenuOferta::class);
+    }
 }

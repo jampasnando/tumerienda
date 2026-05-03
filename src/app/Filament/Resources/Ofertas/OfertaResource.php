@@ -42,7 +42,8 @@ class OfertaResource extends Resource
     public static function getRelations(): array
     {
         return [
-                RelationManagers\MenusRelationManager::class,
+                // RelationManagers\MenusRelationManager::class,
+                RelationManagers\MenuOfertasRelationManager::class,
         ];
     }
 

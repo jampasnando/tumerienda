@@ -62,7 +62,7 @@ class MenusRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('nombre')
             ->columns([
-                TextColumn::make('pivot.grupo')
+                TextColumn::make('pirvot.grupo_id')
                     ->label('Grupo'),
                 TextColumn::make('tipo'),
                 TextColumn::make('nombre')

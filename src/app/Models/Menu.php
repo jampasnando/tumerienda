@@ -39,5 +39,8 @@ public function getCostoTotalAttribute()
         ->value('total') ?? 0;
 
 }
+    public function menuOfertas(){
+        return $this->belongsToMany(MenuOferta::class);
+    }
 
 }
