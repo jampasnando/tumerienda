@@ -19,7 +19,8 @@ use Filament\Tables\Table;
 class PlanResource extends Resource
 {
     protected static ?string $model = Plan::class;
-
+    protected static ?string $label = 'Plan';
+    protected static ?string $pluralLabel = 'Planes';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'nombre';

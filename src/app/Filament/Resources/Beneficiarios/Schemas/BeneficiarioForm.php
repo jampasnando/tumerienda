@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class BeneficiarioForm
@@ -14,15 +15,21 @@ class BeneficiarioForm
     {
         return $schema
             ->components([
-                TextInput::make('nombre'),
-                DatePicker::make('fechanac'),
-                Select::make('genero')
-                    ->options([
-                        'masculino' => 'Masculino',
-                        'femenino' => 'Femenino',
-                    ]),
-                Textarea::make('comentarios')
-                    ->columnSpanFull(),
+                Section::make('Información Beneficiario')
+                    ->schema([
+                        TextInput::make('nombre'),
+                        DatePicker::make('fechanac'),
+                        Select::make('genero')
+                            ->options([
+                                'masculino' => 'Masculino',
+                                'femenino' => 'Femenino',
+                        ]),
+                        Textarea::make('comentarios')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed()
             ]);
     }
 }

@@ -37,6 +37,9 @@ class BeneficiarioPlansRelationManager extends RelationManager
             ->components([
                 Select::make('plan_id')
                     ->relationship('plan', 'nombre')
+                    ->getOptionLabelFromRecordUsing(fn ($record) =>
+                            "{$record->nombre} - Bs {$record->precio} - {$record->nroentregas} entregas"
+                        )
                     ->searchable()
                     ->required()
                     ->preload(),
@@ -94,18 +97,18 @@ class BeneficiarioPlansRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
-                AssociateAction::make(),
+                // AssociateAction::make(),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
+                // DissociateAction::make(),
                 DeleteAction::make(),
                 ForceDeleteAction::make(),
                 RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
+                    // DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
