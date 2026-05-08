@@ -53,4 +53,8 @@ public function beneficiariostutors()
 {
     return $this->hasMany(\App\Models\BeneficiarioTutor::class);
 }
+public function beneficiarioPlans()
+{
+    return $this->hasMany(\App\Models\BeneficiarioPlan::class)->withoutTrashed();
+}
 }

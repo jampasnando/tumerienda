@@ -46,6 +46,7 @@ class BeneficiarioResource extends Resource
         return [
             RelationManagers\BeneficiarioColegiosRelationManager::class,
             RelationManagers\TutoresRelationManager::class,
+            RelationManagers\BeneficiarioPlansRelationManager::class,
         ];
     }
 
