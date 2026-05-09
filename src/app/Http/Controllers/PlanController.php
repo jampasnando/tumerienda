@@ -64,7 +64,7 @@ class PlanController extends Controller
     }
     public function abiertos()
     {
-        $planesAbiertos = Plan::where('estado', 'abierto')->get();
+        $planesAbiertos = Plan::where('estado', true)->get();
         return response()->json($planesAbiertos);
     }
 }
