@@ -176,7 +176,7 @@ class BeneficiarioController extends Controller
 
             return [
 
-                'fecha' => $oferta->fecha->format('Y-m-d'),
+                'fecha' => $oferta->fecha,
 
                 'oferta_id' => $oferta->id,
 
