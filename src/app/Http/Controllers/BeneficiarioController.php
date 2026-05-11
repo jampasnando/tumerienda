@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\CodigoColegio;
 use App\Models\Beneficiario;
 use App\Models\BeneficiarioColegio;
-// use App\Models\BeneficiarioGestion;
 use App\Models\BeneficiarioTutor;
 use App\Models\Colegio;
+use App\Models\Oferta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -120,5 +121,77 @@ class BeneficiarioController extends Controller
     public function destroy(Beneficiario $beneficiario)
     {
         //
+    }
+    //
+
+
+    public function calendarioBeneficiario($beneficiarioId)
+    {
+        $mes = request('mes', Carbon::now()->month);
+        $anio = request('anio', Carbon::now()->year);
+
+        $inicio = Carbon::create($anio, $mes, 1)->startOfMonth();
+        $fin = Carbon::create($anio, $mes, 1)->endOfMonth();
+
+        $ofertas = Oferta::query()
+            ->where('activo', 1)
+            ->whereBetween('fecha', [$inicio, $fin])
+
+            ->with([
+                'suscripciones' => function ($q) use ($beneficiarioId) {
+
+                    $q->where('beneficiario_id', $beneficiarioId);
+                }
+            ])
+
+            ->orderBy('fecha')
+            ->get();
+
+        $resultado = $ofertas->map(function ($oferta) {
+
+            $suscripcion = $oferta->suscripciones->first();
+
+            $estado = null;
+            $color = 'gray';
+
+            if ($suscripcion) {
+
+                $estado = $suscripcion->estado;
+
+                switch ($suscripcion->estado) {
+
+                    case 'pendiente':
+                        $color = 'orange';
+                        break;
+
+                    case 'entregado':
+                        $color = 'green';
+                        break;
+
+                    case 'noentregado':
+                        $color = 'red';
+                        break;
+                }
+            }
+
+            return [
+
+                'fecha' => $oferta->fecha->format('Y-m-d'),
+
+                'oferta_id' => $oferta->id,
+
+                'suscripcion_id' => $suscripcion?->id,
+
+                'estado' => $estado,
+
+                'color' => $color,
+            ];
+        });
+
+        return response()->json([
+            'mes' => (int)$mes,
+            'anio' => (int)$anio,
+            'items' => $resultado,
+        ]);
     }
 }

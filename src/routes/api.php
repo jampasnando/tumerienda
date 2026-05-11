@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\BeneficiarioController;
+use App\Http\Controllers\BeneficiarioPlanController;
 use App\Http\Controllers\ColegioController;
 use App\Http\Controllers\OfertaController;
 use App\Http\Controllers\PackController;
@@ -41,3 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
 // Route::middleware('auth:sanctum')->get('/packs/abiertos', [PackController::class, 'abiertos']);
 Route::get('/packs/abiertos', [PackController::class, 'abiertos']);
 Route::get('/planes/abiertos', [PlanController::class, 'abiertos']);
+Route::middleware('auth:sanctum')->get('/beneficiario/{id}/planes',[BeneficiarioPlanController::class, 'planesBeneficiario']);
+Route::middleware('auth:sanctum')->get(
+    'beneficiarios/{beneficiario}/calendario',
+    [BeneficiarioController::class, 'calendarioBeneficiario']
+);
+
+

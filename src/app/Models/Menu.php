@@ -43,5 +43,15 @@ public function getCostoTotalAttribute()
     {
         return $this->hasMany(MenuOferta::class);
     }
+    
+    public function suscripciones()
+    {
+        return $this->belongsToMany(
+            Suscripcion::class,
+            'menu_suscripcion',
+            'menu_id',
+            'suscripcion_id'
+        );
+    }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeneficiarioPlan;
+use App\Models\Oferta;
 use Illuminate\Http\Request;
 
 class BeneficiarioPlanController extends Controller
@@ -62,4 +63,24 @@ class BeneficiarioPlanController extends Controller
     {
         //
     }
+    public function planesBeneficiario($beneficiarioId)
+    {
+        $planes = BeneficiarioPlan::with('plan')
+            ->where('beneficiario_id', $beneficiarioId)
+            ->get();
+            // ->map(function ($bp) {
+            //     return [
+            //         'id' => $bp->id,
+            //         'plan_id' => $bp->plan_id,
+            //         'plan_nombre' => $bp->plan->nombre,
+            //         'plan_precio' => $bp->plan->precio,
+            //         'plan_nroentregas' => $bp->plan->nroentregas,
+            //         'fecha_inicio' => $bp->fecha_inicio,
+            //         'fecha_fin' => $bp->fecha_fin,
+            //     ];
+            // });
+
+        return response()->json($planes);
+    }
+    
 }

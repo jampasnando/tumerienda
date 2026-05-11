@@ -34,4 +34,13 @@ public function oferta()
 {
     return $this->belongsTo(Oferta::class);
 }
+public function menus()
+{
+    return $this->belongsToMany(
+        Menu::class,
+        'menu_suscripcion',
+        'suscripcion_id',
+        'menu_id'
+    );
+}
 }
