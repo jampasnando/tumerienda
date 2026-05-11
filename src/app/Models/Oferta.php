@@ -32,4 +32,8 @@ class Oferta extends Model
     {
         return $this->belongsTo(Pack::class);
     }
+    public function suscripciones()
+    {
+        return $this->hasMany(Suscripcion::class);
+    }
 }
