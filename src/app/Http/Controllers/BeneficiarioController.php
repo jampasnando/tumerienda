@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\CodigoColegio;
 use App\Models\Beneficiario;
 use App\Models\BeneficiarioColegio;
+use App\Models\BeneficiarioPlan;
 use App\Models\BeneficiarioTutor;
 use App\Models\Colegio;
 use App\Models\Oferta;
@@ -193,5 +194,13 @@ class BeneficiarioController extends Controller
             'anio' => (int)$anio,
             'items' => $resultado,
         ]);
+    }
+    public function beneficiarioPlanes($beneficiarioId)
+    {
+        $planes = BeneficiarioPlan::with('plan')
+            ->where('beneficiario_id', $beneficiarioId)
+            ->get();
+
+        return response()->json($planes);
     }
 }

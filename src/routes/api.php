@@ -42,10 +42,15 @@ Route::middleware('auth:sanctum')->group(function () {
 // Route::middleware('auth:sanctum')->get('/packs/abiertos', [PackController::class, 'abiertos']);
 Route::get('/packs/abiertos', [PackController::class, 'abiertos']);
 Route::get('/planes/abiertos', [PlanController::class, 'abiertos']);
+
 Route::middleware('auth:sanctum')->get('/beneficiario/{id}/planes',[BeneficiarioPlanController::class, 'planesBeneficiario']);
+
 Route::middleware('auth:sanctum')->get(
     'beneficiarios/{beneficiario}/calendario',
     [BeneficiarioController::class, 'calendarioBeneficiario']
 );
-
+Route::middleware('auth:sanctum')->post(
+    '/beneficiariooplan',
+    [BeneficiarioPlanController::class, 'store']
+);
 

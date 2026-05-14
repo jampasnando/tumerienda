@@ -29,7 +29,14 @@ class BeneficiarioPlanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+            $request->validate([
+                'beneficiario_id' => 'required|exists:beneficiarios,id',
+                'plan_id' => 'required|exists:planes,id',
+                'estado' => 'required|string',
+                'nrorecibidos' => 'required|integer',
+            ]);
+            BeneficiarioPlan::create($request->all());
     }
 
     /**
@@ -82,5 +89,5 @@ class BeneficiarioPlanController extends Controller
 
         return response()->json($planes);
     }
-    
+
 }
