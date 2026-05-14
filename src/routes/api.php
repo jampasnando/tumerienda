@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->get(
     [BeneficiarioController::class, 'calendarioBeneficiario']
 );
 Route::middleware('auth:sanctum')->post(
-    '/beneficiariooplan',
+    '/beneficiarioplan',
     [BeneficiarioPlanController::class, 'store']
 );
 
