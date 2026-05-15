@@ -34,7 +34,7 @@ class BeneficiarioPlanController extends Controller
             $request->validate([
                 'beneficiario_id' => 'required|exists:beneficiarios,id',
                 'plan_id' => 'required|exists:plans,id',
-                'estado' => 'required|string',
+                'estado' => 'required|boolean',
                 'nrorecibidos' => 'required|integer',
             ]);
             BeneficiarioPlan::create($request->all());
