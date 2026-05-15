@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BeneficiarioPlan;
 use App\Models\Oferta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BeneficiarioPlanController extends Controller
 {
@@ -29,10 +30,10 @@ class BeneficiarioPlanController extends Controller
      */
     public function store(Request $request)
     {
-
+            Log::info('Datos recibidos para crear BeneficiarioPlan: ', $request->all());
             $request->validate([
                 'beneficiario_id' => 'required|exists:beneficiarios,id',
-                'plan_id' => 'required|exists:planes,id',
+                'plan_id' => 'required|exists:plans,id',
                 'estado' => 'required|string',
                 'nrorecibidos' => 'required|integer',
             ]);
