@@ -53,4 +53,4 @@ Route::middleware('auth:sanctum')->post(
     '/beneficiarioplan',
     [BeneficiarioPlanController::class, 'store']
 );
-
+Route::middleware('auth:sanctum')->post('/oferta-fecha', [OfertaController::class, 'ofertaFecha']);

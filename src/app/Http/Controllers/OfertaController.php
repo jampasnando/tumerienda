@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Oferta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OfertaController extends Controller
 {
@@ -121,5 +122,64 @@ class OfertaController extends Controller
         }
 
         return $dias;
+    }
+    public function ofertaFecha(Request $request)
+    {
+        $fecha = $request->fecha;
+        $beneficiarioId = $request->beneficiario_id;
+
+        // Oferta de esa fecha
+        $oferta = Oferta::where('fecha', $fecha)
+            ->where('activo', 1)
+            ->first();
+
+        if (!$oferta) {
+            return response()->json([
+                'grupos' => []
+            ]);
+        }
+
+        // Menús de la oferta
+        $menusOferta = DB::table('menu_oferta')
+            ->join('menus', 'menus.id', '=', 'menu_oferta.menu_id')
+            ->where('menu_oferta.oferta_id', $oferta->id)
+            ->select(
+                'menu_oferta.grupo_id',
+                'menus.id',
+                'menus.nombre',
+                'menus.descripcion',
+                'menus.foto'
+            )
+            ->get();
+
+        // Suscripciones existentes
+        $suscripciones = DB::table('suscripciones')
+            ->where('beneficiario_id', $beneficiarioId)
+            ->where('oferta_id', $oferta->id)
+            ->pluck('menu_id')
+            ->toArray();
+
+        // Agrupar
+        $grupos = [];
+
+        foreach ($menusOferta as $menu) {
+
+            if (!isset($grupos[$menu->grupo_id])) {
+                $grupos[$menu->grupo_id] = [];
+            }
+
+            $grupos[$menu->grupo_id][] = [
+                'id' => $menu->id,
+                'nombre' => $menu->nombre,
+                'descripcion' => $menu->descripcion,
+                'foto' => $menu->foto,
+                'seleccionado' => in_array($menu->id, $suscripciones)
+            ];
+        }
+
+        return response()->json([
+            'oferta_id' => $oferta->id,
+            'grupos' => $grupos
+        ]);
     }
 }
