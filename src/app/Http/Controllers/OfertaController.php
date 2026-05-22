@@ -142,13 +142,15 @@ class OfertaController extends Controller
         // Menús de la oferta
         $menusOferta = DB::table('menu_oferta')
             ->join('menus', 'menus.id', '=', 'menu_oferta.menu_id')
+            ->join('grupos', 'grupos.id', '=', 'menu_oferta.grupo_id')
             ->where('menu_oferta.oferta_id', $oferta->id)
             ->select(
                 'menu_oferta.grupo_id',
                 'menus.id',
                 'menus.nombre',
                 'menus.descripcion',
-                'menus.foto'
+                'menus.foto',
+                'grupos.nombre as nombre_grupo'
             )
             ->get();
 
