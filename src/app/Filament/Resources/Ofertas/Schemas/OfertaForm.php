@@ -22,6 +22,8 @@ class OfertaForm
                     ->searchable()
                     ->preload(),
                 DatePicker::make('fecha'),
+                Toggle::make('activo')
+                    ->default(true),
                 // DatePicker::make('fecha_inicio'),
                 // DatePicker::make('fecha_fin'),
                 // Toggle::make('activo')
