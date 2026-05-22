@@ -166,11 +166,11 @@ class OfertaController extends Controller
 
         foreach ($menusOferta as $menu) {
 
-            if (!isset($grupos[$menu->grupo_id])) {
-                $grupos[$menu->grupo_id] = [];
+            if (!isset($grupos[$menu->nombre_grupo])) {
+                $grupos[$menu->nombre_grupo] = [];
             }
 
-            $grupos[$menu->grupo_id][] = [
+            $grupos[$menu->nombre_grupo][] = [
                 'id' => $menu->id,
                 'nombre' => $menu->nombre,
                 'descripcion' => $menu->descripcion,
