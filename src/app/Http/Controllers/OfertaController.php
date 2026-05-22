@@ -175,7 +175,8 @@ class OfertaController extends Controller
                 'nombre' => $menu->nombre,
                 'descripcion' => $menu->descripcion,
                 'foto' => $menu->foto,
-                'seleccionado' => in_array($menu->id, $suscripciones)
+                'seleccionado' => in_array($menu->id, $suscripciones),
+                'nombre_grupo' => $menu->nombre_grupo
             ];
         }
 
