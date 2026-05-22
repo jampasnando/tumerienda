@@ -14,7 +14,7 @@ class Oferta extends Model
         // 'nombre',
         // 'fecha_inicio',
         // 'fecha_fin',
-        // 'activo',
+        'activo',
         'pack_id',
         'fecha'
     ];

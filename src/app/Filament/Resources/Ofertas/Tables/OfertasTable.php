@@ -28,6 +28,11 @@ class OfertasTable
                 //     ->boolean(),
                 TextColumn::make('pack.nombre'),
                 TextColumn::make('fecha'),
+                IconColumn::make('activo')
+                    ->label('Activo')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
