@@ -42,60 +42,76 @@ class SuscripcionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+
             'beneficiario_id' => 'required|integer',
             'oferta_id' => 'required|integer',
             'colegio_id' => 'required|integer',
-            'selecciones' => 'required|array',
-        ]);
 
-        $oferta = Oferta::with('menus')->findOrFail($request->oferta_id);
+            'fecha' => 'required|date',
+
+            'menus' => 'required|array',
+            'menus.*' => 'integer'
+
+        ]);
 
         $tutor_id = $request->user()->id;
 
-        // 🔥 obtener IDs válidos de menús de esta oferta
-        $menusValidos = $oferta->menus->pluck('id')->toArray();
+        $oferta = Oferta::with('menus')
+            ->findOrFail($request->oferta_id);
 
-        foreach ($request->selecciones as $fecha => $menu_id) {
+        $fecha = Carbon::parse($request->fecha);
 
-            $fechaCarbon = Carbon::parse($fecha);
+        // solo lunes a viernes
+        if (!$fecha->isWeekday()) {
 
-            // ✅ validar rango de fechas
-            if (
-                $fechaCarbon->lt($oferta->fecha_inicio) ||
-                $fechaCarbon->gt($oferta->fecha_fin)
-            ) {
-                continue;
-            }
+            return response()->json([
+                'success' => false,
+                'message' => 'Fecha inválida'
+            ], 422);
 
-            // ✅ solo lunes a viernes
-            if (!$fechaCarbon->isWeekday()) {
-                continue;
-            }
+        }
 
-            // ✅ validar menú pertenece a la oferta
+        // IDs válidos de la oferta
+        $menusValidos = $oferta->menus
+            ->pluck('id')
+            ->toArray();
+
+        // limpiar anteriores de esa fecha
+        Suscripcion::where('beneficiario_id', $request->beneficiario_id)
+            ->where('fecha', $request->fecha)
+            ->delete();
+
+        // guardar nuevas
+        foreach ($request->menus as $menu_id) {
+
+            // validar que pertenezca a la oferta
             if (!in_array($menu_id, $menusValidos)) {
                 continue;
             }
 
-            // 🔥 guardar (update o create)
-            Suscripcion::updateOrCreate(
-                [
-                    'beneficiario_id' => $request->beneficiario_id,
-                    'fecha' => $fecha,
-                ],
-                [
-                    'oferta_id' => $request->oferta_id,
-                    'menu_id' => $menu_id,
-                    'colegio_id' => $request->colegio_id,
-                    'tutor_id' => $tutor_id,
-                    'estado' => 'activo',
-                ]
-            );
+            Suscripcion::create([
+
+                'beneficiario_id' => $request->beneficiario_id,
+
+                'oferta_id' => $request->oferta_id,
+
+                'menu_id' => $menu_id,
+
+                'fecha' => $request->fecha,
+
+                'colegio_id' => $request->colegio_id,
+
+                'tutor_id' => $tutor_id,
+
+                'estado' => 'activo'
+
+            ]);
+
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Suscripciones guardadas correctamente'
+            'message' => 'Suscripción guardada'
         ]);
     }
 
