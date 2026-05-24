@@ -103,7 +103,7 @@ class SuscripcionController extends Controller
 
                 'tutor_id' => $tutor_id,
 
-                'estado' => 'activo'
+                'estado' => 'pendiente'
 
             ]);
 
