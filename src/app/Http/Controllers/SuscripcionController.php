@@ -79,7 +79,7 @@ class SuscripcionController extends Controller
         // limpiar anteriores de esa fecha
         Suscripcion::where('beneficiario_id', $request->beneficiario_id)
             ->where('fecha', $request->fecha)
-            ->delete();
+            ->forceDelete();
 
         // guardar nuevas
         foreach ($request->menus as $menu_id) {
@@ -127,7 +127,7 @@ class SuscripcionController extends Controller
 
         Suscripcion::where('beneficiario_id', $request->beneficiario_id)
             ->where('oferta_id', $request->oferta_id)
-            ->delete();
+            ->forceDelete();
 
         return response()->json([
             'success' => true,
