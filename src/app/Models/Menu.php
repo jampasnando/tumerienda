@@ -17,8 +17,8 @@ class Menu extends Model
         'foto',
         'activo',
         'preparacion',
-        'tipo'
-
+        'tipo',
+        'precio',
         // 'fechainicio',
         // 'fechafin'
 
@@ -43,7 +43,7 @@ public function getCostoTotalAttribute()
     {
         return $this->hasMany(MenuOferta::class);
     }
-    
+
     public function suscripciones()
     {
         return $this->belongsToMany(

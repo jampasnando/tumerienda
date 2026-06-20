@@ -31,13 +31,13 @@ class MenusTable
                 //     ->numeric()
                 //     ->sortable(),
                 TextColumn::make('costo_total')
-                    ->label('Costo')
+                    ->label('Costo Ingred.')
                     ->numeric()
                     ->sortable(),
 
-                // TextColumn::make('precio')
-                //     ->numeric()
-                //     ->sortable(),
+                TextColumn::make('precio')
+                    ->numeric()
+                    ->sortable(),
                 IconColumn::make('activo')
                     ->sortable()
                     ->boolean(),

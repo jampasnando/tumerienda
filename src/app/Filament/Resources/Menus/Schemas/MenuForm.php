@@ -23,8 +23,8 @@ class MenuForm
                     ->default(true),
                 Textarea::make('descripcion')
                     ->columnSpanFull(),
-                // TextInput::make('precio')
-                //     ->numeric(),
+                TextInput::make('precio')
+                    ->numeric(),
                 Select::make('tipo')
                     ->options(function () {
                         return Tipo::query()
