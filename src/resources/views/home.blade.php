@@ -750,7 +750,7 @@
 <section class="cta-banner" id="contacto">
   <h2>¿Listo para que tu hijo coma <span>mejor en la escuela?</span></h2>
   <p>Suscríbete hoy y recibe el menú de la semana, alertas de nuevas recetas y descuentos exclusivos para familias.</p>
-  <a href="#" class="cta-btn">Suscribirse ahora →</a>
+  <a href="https://apptumerienda.sistembo.online" class="cta-btn">Suscribirse ahora →</a>
 </section>
 
 <!-- FOOTER -->
