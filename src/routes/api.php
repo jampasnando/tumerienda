@@ -54,3 +54,4 @@ Route::middleware('auth:sanctum')->post(
     [BeneficiarioPlanController::class, 'store']
 );
 Route::middleware('auth:sanctum')->post('/oferta-fecha', [OfertaController::class, 'ofertaFecha']);
+Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");

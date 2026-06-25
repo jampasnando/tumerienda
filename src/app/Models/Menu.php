@@ -19,6 +19,7 @@ class Menu extends Model
         'preparacion',
         'tipo',
         'precio',
+        'envase_id',
         // 'fechainicio',
         // 'fechafin'
 
@@ -53,5 +54,8 @@ public function getCostoTotalAttribute()
             'suscripcion_id'
         );
     }
-
+    public function envase()
+    {
+        return $this->belongsTo(Envase::class);
+    }
 }

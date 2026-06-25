@@ -38,6 +38,10 @@ class MenuForm
                     ->downloadable()
                     ->imageEditor()
                     ->previewable(),
+                Select::make('envase_id')
+                    ->label('Envase')
+                    ->relationship('envase', 'nombre')
+                    ->required(),
                 RichEditor::make('preparacion')
                     ->columnSpanFull(),
             ])
