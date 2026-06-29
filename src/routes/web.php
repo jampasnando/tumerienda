@@ -7,3 +7,6 @@ Route::get('/', function () {
 });
 // Route::redirect('/', '/admin');
 
+Route::get('/politica-privacidad', function () {
+    return view('politica_privacidad');
+});
