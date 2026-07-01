@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\BeneficiarioPlanController;
 use App\Http\Controllers\ColegioController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\OfertaController;
 use App\Http\Controllers\PackController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\SuscripcionController;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,3 +57,4 @@ Route::middleware('auth:sanctum')->post(
 );
 Route::middleware('auth:sanctum')->post('/oferta-fecha', [OfertaController::class, 'ofertaFecha']);
 Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
+Route::get('/avisos', [AvisoController::class, 'avisos']);
