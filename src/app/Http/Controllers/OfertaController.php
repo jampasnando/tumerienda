@@ -150,6 +150,7 @@ class OfertaController extends Controller
                 'menus.nombre',
                 'menus.descripcion',
                 'menus.foto',
+                'menus.precio',
                 'grupos.nombre as nombre_grupo'
             )
             ->get();

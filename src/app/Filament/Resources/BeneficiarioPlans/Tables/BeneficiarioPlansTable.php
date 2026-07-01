@@ -21,6 +21,10 @@ class BeneficiarioPlansTable
                 TextColumn::make('plan.nombre')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('plan.precio')
+                    ->label('Precio')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('beneficiario.nombre')
                     ->numeric()
                     ->sortable(),
