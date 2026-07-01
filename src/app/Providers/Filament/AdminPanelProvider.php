@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarWidth('12rem')
+            ->sidebarWidth('13rem')
             ->maxContentWidth(Width::ScreenTwoExtraLarge)
             ->favicon(asset('images/favicon.ico'));
     }
