@@ -14,6 +14,7 @@ class BeneficiarioPlan extends Model
         'plan_id',
         'estado',
         'nrorecibidos',
+        'detalle',
     ];
 
     public function beneficiario()

@@ -36,6 +36,7 @@ class BeneficiarioPlanController extends Controller
                 'plan_id' => 'required|exists:plans,id',
                 'estado' => 'required|boolean',
                 'nrorecibidos' => 'required|integer',
+                'detalle' => 'nullable|string',
             ]);
             BeneficiarioPlan::create($request->all());
     }
