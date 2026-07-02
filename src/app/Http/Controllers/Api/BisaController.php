@@ -336,4 +336,8 @@ class BisaController extends Controller
             return json_encode("NOPAGADO");
         }
     }
+    public function configuracion(){
+        $configuracion=DB::select("select * from configuracion limit 1");
+        return json_encode($configuracion[0]);
+    }
 }

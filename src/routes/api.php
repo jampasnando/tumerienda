@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BisaController;
 use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\BeneficiarioPlanController;
@@ -58,3 +59,5 @@ Route::middleware('auth:sanctum')->post(
 Route::middleware('auth:sanctum')->post('/oferta-fecha', [OfertaController::class, 'ofertaFecha']);
 Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
 Route::get('/avisos', [AvisoController::class, 'avisos']);
+
+Route::get('/configuracion', [BisaController::class, 'configuracion']);

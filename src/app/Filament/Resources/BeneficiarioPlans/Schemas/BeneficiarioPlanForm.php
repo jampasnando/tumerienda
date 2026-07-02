@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\BeneficiarioPlans\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use PhpParser\Node\Expr\Cast\Bool_;
 
 class BeneficiarioPlanForm
 {
@@ -11,15 +14,21 @@ class BeneficiarioPlanForm
     {
         return $schema
             ->components([
-                TextInput::make('plan_id')
-                    ->numeric(),
-                TextInput::make('beneficiario_id')
-                    ->numeric(),
-                TextInput::make('estado'),
+                Select::make('plan_id')
+                    ->options(function () {
+                        return \App\Models\Plan::pluck('nombre', 'id');
+                    }),
+                Select::make('beneficiario_id')
+                    ->options(function () {
+                        return \App\Models\Beneficiario::pluck('nombre', 'id');
+                    }),
+                Toggle::make('estado')
+                    ->default(true),
                 TextInput::make('nrorecibidos')
-                    ->numeric(),
-                TextInput::make('pagado')
-                    ->numeric(),
+                    ->numeric()
+                    ->default(0),
+                // TextInput::make('pagado')
+                //     ->numeric(),
             ]);
     }
 }
