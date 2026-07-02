@@ -337,7 +337,7 @@ class BisaController extends Controller
         }
     }
     public function configuracion(){
-        $configuracion=DB::select("select * from configuracion limit 1");
+        $configuracion=DB::select("select * from configuracion where estado = 1 limit 1");
         return json_encode($configuracion[0]);
     }
 }
