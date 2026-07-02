@@ -179,25 +179,27 @@ class BisaController extends Controller
 
     public function verificapagoqr(Request $request)
     {
-        $idqr = $request->idqr;
-        // $idqr = 0;
-        $existepago = Cobrosqr::where("idQr", $idqr)->get();
-        if (count($existepago) > 0) {
-            $carrito = $request->carrito;
-            $vendedor = $request->vendedor;
-            $deposito = $request->deposito;
-            $enc_caja = Vendedore::where("rol", "Enc. Tienda y caja")->where("ciudad", $deposito)->get();
+        // $idqr = $request->idqr;
+        // // $idqr = 0;
+        // $existepago = Cobrosqr::where("idQr", $idqr)->get();
+        // if (count($existepago) > 0) {
+        //     $carrito = $request->carrito;
+        //     $vendedor = $request->vendedor;
+        //     $deposito = $request->deposito;
+        //     $enc_caja = Vendedore::where("rol", "Enc. Tienda y caja")->where("ciudad", $deposito)->get();
 
-            $idventa = uniqid();
-            $hoy = date("dmY_His");
-            $hoyxareg = date("Y-m-d H:i:s");
-            $regventa = $this->registraventaqr($deposito, $carrito, $existepago, $enc_caja, $idventa, $hoyxareg, $vendedor);
-            $linkgarantia = $this->pdfgarantia($carrito, $existepago, $enc_caja, $idventa, $hoy);
+        //     $idventa = uniqid();
+        //     $hoy = date("dmY_His");
+        //     $hoyxareg = date("Y-m-d H:i:s");
+        //     $regventa = $this->registraventaqr($deposito, $carrito, $existepago, $enc_caja, $idventa, $hoyxareg, $vendedor);
+        //     $linkgarantia = $this->pdfgarantia($carrito, $existepago, $enc_caja, $idventa, $hoy);
 
-            return json_encode(["idQr" => $idqr, "carritorecibidoencontroller" => $carrito, "vendedor" => $vendedor, "EncCaja" => $enc_caja, "existepago" => $existepago, "garantia" => $linkgarantia]);
-        }
-
-        return json_encode($existepago);
+        //     return json_encode(["idQr" => $idqr, "carritorecibidoencontroller" => $carrito, "vendedor" => $vendedor, "EncCaja" => $enc_caja, "existepago" => $existepago, "garantia" => $linkgarantia]);
+        // }
+        $recibido = $request->all();
+        DB::table('beneficiario_plan')->update(['detalle' => $recibido]);
+        $respuesta = ["codigo" => "0000", "mensaje" => "Registro Exitoso"];
+        return json_encode($respuesta);
     }
 
     public function registraventaqr($deposito, $carrito, $existepago, $enc_caja, $idventa, $hoyxareg, $vendedor)
