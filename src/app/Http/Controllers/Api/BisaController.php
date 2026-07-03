@@ -25,8 +25,8 @@ class BisaController extends Controller
         // $password='Mamier@dmin2024';
         // $usuario='XXLqruser';
         // $password='Mamier@2024admin';
-        $usuario='ADAMCZYK';
-        $password='Tumerienda123';
+        $usuario='bisaqr';
+        $password='Tumeriend@123';
         $header = $request->header('Authorization');
         $partes= explode(':',base64_decode(explode(' ',$header)[1]));
         if($partes[0]==$usuario && $partes[1]==$password){
