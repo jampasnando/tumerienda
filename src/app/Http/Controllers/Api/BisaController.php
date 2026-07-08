@@ -68,13 +68,6 @@ class BisaController extends Controller
 
     public function obtieneqr(Request $request)
     {
-        // return $request->input();
-        // $arregloids = array_map(fn($unprod)=>$unprod["id"], $request->input());
-        // $prodsinv = Inventario::whereIn('id', $arregloids)->get()->toArray();
-        // $montoqr = $this->calculamontoqr($request->input(),$prodsinv);
-        // $montoqr=array_reduce($request->input(),fn($suma,$unprod)=>$this->calculamontoqr($suma,$unprod,$prods),0);
-
-        // return json_encode(["prods" => $prodsinv,"sumaparaqr"=>$montoqr]);
         $configuracion = $this->getConfiguracion();
         Log::info("Configuracion obtenida: " . json_encode($configuracion));
         if (!$configuracion) {
@@ -104,7 +97,6 @@ class BisaController extends Controller
 
 
             $headers = array();
-            // $headers[] = 'Apikeyservicio: 4acaaf89843185d6df4de5f4b5202716a0ef65b06849df17';
             $headers[] = 'Apikeyservicio: ' . $apikeyServicio;
             $headers[] = 'Authorization: Bearer ' . $eltoken;
             $headers[] = 'Content-Type: application/json';
@@ -130,7 +122,6 @@ class BisaController extends Controller
 
             curl_setopt_array($curl, array(
                 CURLOPT_URL => $urltoken,
-                // CURLOPT_URL => 'https://dev-sip.mc4.com.bo:8443/autenticacion/v1/generarToken',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -139,8 +130,6 @@ class BisaController extends Controller
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => '{
-                // "password":"mamier@XXLprod9",
-                // "username":"EMISORMIER"
                 "password":"'.$password.'",
                 "username":"'.$username.'"
             }',
