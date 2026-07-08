@@ -266,12 +266,14 @@ class BisaController extends Controller
 
     public function veestadoqr(Request $request){
         $config = $this->getConfiguracion();
+        Log::info("Configuracion obtenida para veestadoqr: " . json_encode($config));
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
         if ($eltoken == '') {
             return response()->json(['error' => 'Token de Bisa no disponible'], 404);
         } else {
             $alias=$request->alias;
+            Log::info("Alias: ".$alias);
             // $alias = "qr24102024170718";
 
             $ch = curl_init();
