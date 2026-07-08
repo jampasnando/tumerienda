@@ -265,6 +265,7 @@ class BisaController extends Controller
     }
 
     public function veestadoqr(Request $request){
+        $config = $this->getConfiguracion();
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
         if ($eltoken == '') {
@@ -274,13 +275,13 @@ class BisaController extends Controller
             // $alias = "qr24102024170718";
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://sip.mc4.com.bo:8443/api/v1/estadoTransaccion');
+            curl_setopt($ch, CURLOPT_URL, $config->urlestadoqr);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"alias\": \"$alias\"}");
 
             $headers = array();
-            $headers[] = 'Apikeyservicio: 4acaaf89843185d6df4de5f4b5202716a0ef65b06849df17';
+            $headers[] = 'Apikeyservicio: ' . $config->apikeyServicio;
             $headers[] = 'Authorization: Bearer ' . $eltoken;
             $headers[] = 'Content-Type: application/json';
             // return json_encode($headers);
@@ -289,25 +290,13 @@ class BisaController extends Controller
             curl_close($ch);
 
             $dataqr = json_decode($response);
+            Log::info("Respuesta estado QR: " . json_encode($dataqr));
             $estadoActual=$dataqr->objeto->estadoActual;
             if($estadoActual=="PAGADO"){
-                $nuevo=Cobrosqr::create([
-                    "alias"=>$dataqr->objeto->alias,
-                    "numeroOrdenOriginante"=>$dataqr->objeto->numeroOrdenOriginante,
-                    "monto"=>$dataqr->objeto->monto,
-                    "idQr"=>$dataqr->objeto->idQr,
-                    "moneda"=>$dataqr->objeto->moneda,
-                    "fechaproceso"=>$dataqr->objeto->fechaProcesamiento,
-                    "cuentaCliente"=>$dataqr->objeto->cuentaCliente,
-                    "nombreCliente"=>$dataqr->objeto->nombreCliente,
-                    "documentoCliente"=>$dataqr->objeto->documentoCliente,
-                    "fechareg"=>date("Y-m-d H:i:s")
-                    ]);
-                    return response()->json("PAGADO");
+                    return response()->json($dataqr);
             }
-            // $guardaqrgenerado = ["codigo" => $dataqr->codigo, "mensaje" => $dataqr->mensaje, "imagenQr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "fechaVencimiento" => $dataqr->objeto->fechaVencimiento, "bancoDestino" => $dataqr->objeto->bancoDestino, "cuentaDestino" => $dataqr->objeto->cuentaDestino, "idTransaccion" => $dataqr->objeto->idTransaccion, "esImagen" => $dataqr->objeto->esImagen, "fechareg" => date("Y-m-d H:i:s"),"alias"=>$alias];
-            // Qrgenerado::create($guardaqrgenerado);
-            // return json_encode(["imagenqr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "prods" => $prodsinv,"alias"=>$alias]);
+
+            Log::info("QR no pagado: " . json_encode($dataqr));
             return response()->json("NOPAGADO");
         }
     }
