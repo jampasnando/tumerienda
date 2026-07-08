@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Cobrosqr;
 use App\Models\Detalleventa;
 use App\Models\Inventario;
 use App\Models\Qrgenerado;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Token;
 use App\Models\Vendedore;
 use App\Models\Venta;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use setasign\Fpdi\Fpdi;
 
 class BisaController extends Controller
@@ -65,22 +66,6 @@ class BisaController extends Controller
         return response(json_encode($data),200)->header('Content-Type','application/json');
     }
 
-    public function elprecioventa($id,$prodsinv){
-        foreach ($prodsinv as $key => $unprodinv) {
-            if($unprodinv["id"]==$id){
-                return $unprodinv["precioventa"];
-            }
-        }
-    }
-    public function calculamontoqr($carrito,$prodsinv){
-        $sumaxaqr=0;
-        foreach ($carrito as $key => $unprodcarrito) {
-            $precioventareal=$this->elprecioventa($unprodcarrito["id"],$prodsinv);
-            $sumaxaqr+=$precioventareal * $unprodcarrito["cuantos"];
-        }
-        return $sumaxaqr;
-    }
-
     public function obtieneqr(Request $request)
     {
         // return $request->input();
@@ -90,33 +75,37 @@ class BisaController extends Controller
         // $montoqr=array_reduce($request->input(),fn($suma,$unprod)=>$this->calculamontoqr($suma,$unprod,$prods),0);
 
         // return json_encode(["prods" => $prodsinv,"sumaparaqr"=>$montoqr]);
-        $montoqr=0;
+        $configuracion = $this->getConfiguracion();
+        Log::info("Configuracion obtenida: " . json_encode($configuracion));
+        if (!$configuracion) {
+            return response()->json(['error' => 'Configuración no encontrada'], 404);
+        }
+        $urlqr = $configuracion->urlqr;
+        $apikeyServicio = $configuracion->apikeyServicio;
+        $callback = $configuracion->callback;
+        $glosa = $request->input("glosa");
+        $monto = $request->input("monto");
+        $alias = $request->input("alias");
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
+        Log::info("Token obtenido: " . $eltoken);
         if ($eltoken == '') {
-            return json_encode("eltoken vacio");
+            return response()->json(['error' => 'Token de Bisa no disponible'], 404);
         } else {
             // return $eltoken;
-
             $hoy = date("Y-m-d");
-            $alias = "qr" . date("dmYHis");
-            $glosa = "EL OFERTON";
-            // $monto = "25.0";
-            $monto = $montoqr;
             $vencimiento = date('d/m/Y', strtotime('+1 day', strtotime($hoy)));
 
             $ch = curl_init();
-            // curl_setopt($ch, CURLOPT_URL, 'https://sip.mc4.com.bo:8443/api/v1/generaQr');
-            curl_setopt($ch, CURLOPT_URL, 'https://dev-sip.mc4.com.bo:8443/api/v1/generaQr');
+            curl_setopt($ch, CURLOPT_URL, $urlqr);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            // curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"alias\": \"$alias\",\"callback\": \"https://ferreteriaoferton.com/api/confirmaPago\",\"detalleGlosa\": \"$glosa\",\"monto\": $monto,\"moneda\": \"BOB\",\"fechaVencimiento\": \"$vencimiento\",\"tipoSolicitud\": \"API\",\"unicoUso\": \"true\"}");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"alias\": \"$alias\",\"callback\": \"https://tumerienda.sistembo.online/api/confirmaPago\",\"detalleGlosa\": \"$glosa\",\"monto\": $monto,\"moneda\": \"BOB\",\"fechaVencimiento\": \"$vencimiento\",\"tipoSolicitud\": \"API\",\"unicoUso\": \"true\"}");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"alias\": \"$alias\",\"callback\": \"$callback\",\"detalleGlosa\": \"$glosa\",\"monto\": $monto,\"moneda\": \"BOB\",\"fechaVencimiento\": \"$vencimiento\",\"tipoSolicitud\": \"API\",\"unicoUso\": \"true\"}");
 
 
             $headers = array();
             // $headers[] = 'Apikeyservicio: 4acaaf89843185d6df4de5f4b5202716a0ef65b06849df17';
-            $headers[] = 'Apikeyservicio: 47094eb70f907e8fb6ba0bb9f6eb7fd205f9cad94924df9f';
+            $headers[] = 'Apikeyservicio: ' . $apikeyServicio;
             $headers[] = 'Authorization: Bearer ' . $eltoken;
             $headers[] = 'Content-Type: application/json';
             // return json_encode($headers);
@@ -125,25 +114,23 @@ class BisaController extends Controller
             curl_close($ch);
 
             $dataqr = json_decode($response);
-            $guardaqrgenerado = ["codigo" => $dataqr->codigo, "mensaje" => $dataqr->mensaje, "imagenQr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "fechaVencimiento" => $dataqr->objeto->fechaVencimiento, "bancoDestino" => $dataqr->objeto->bancoDestino, "cuentaDestino" => $dataqr->objeto->cuentaDestino, "idTransaccion" => $dataqr->objeto->idTransaccion, "esImagen" => $dataqr->objeto->esImagen, "fechareg" => date("Y-m-d H:i:s"),"alias"=>$alias];
-            // Qrgenerado::create($guardaqrgenerado);
-            return json_encode(["imagenqr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "prods" => $prodsinv,"alias"=>$alias]);
+
+            Log::info("Respuesta QR: " . json_encode($dataqr));
+            return response()->json(["imagenqr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "alias"=>$alias]);
         }
     }
     public function obtienetokenbisa()
     {
-        $ahora=date("Y-m-d H:i:s");
-        $haytokenvigente = DB::select("select token,TIMESTAMPDIFF(minute, '".$ahora."', fechaexpira) as diferencia from tokens having diferencia>=10 limit 1");
-        $res = count($haytokenvigente);
-        if ($res > 0) {
-            return $haytokenvigente[0]->token;
-        } else {
-            // return json_encode("No hay");
+        $config = $this->getConfiguracion();
+        $username = $config->username;
+        $password = $config->password;
+        $apikey = $config->apikey;
+        $urltoken = $config->urltoken;
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                // CURLOPT_URL => 'https://sip.mc4.com.bo:8443/autenticacion/v1/generarToken',
-                CURLOPT_URL => 'https://dev-sip.mc4.com.bo:8443/autenticacion/v1/generarToken',
+                CURLOPT_URL => $urltoken,
+                // CURLOPT_URL => 'https://dev-sip.mc4.com.bo:8443/autenticacion/v1/generarToken',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -154,12 +141,11 @@ class BisaController extends Controller
                 CURLOPT_POSTFIELDS => '{
                 // "password":"mamier@XXLprod9",
                 // "username":"EMISORMIER"
-                "password":"Tumerienda123",
-                "username":"ADAMCZYK"
+                "password":"'.$password.'",
+                "username":"'.$username.'"
             }',
                 CURLOPT_HTTPHEADER => array(
-                    // 'apikey: d4008dcf38d3aae9864b6efad53cb97ca35a59af1afe2fe8',
-                    'apikey: 3f7cb0dac2e393b52d1a82bcec2ad0fd7116bcabd12b0d20',
+                    'apikey: '.$apikey.'',
                     'Content-Type: application/json'
                 ),
             ));
@@ -168,13 +154,10 @@ class BisaController extends Controller
 
             curl_close($curl);
             $data = json_decode($response);
+            Log::info("Respuesta de obtienetoken bisa " . json_encode($data));
             $token = $data->objeto->token;
-            $hoy = date("Y-m-d H:i:s");
-            $expira = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($hoy)));
-            $guardaratoken = ["token" => $token, "fechareg" => $hoy, "fechaexpira" => $expira];
-            // return json_encode($data->objeto->token);
             return $token;
-        }
+
     }
 
     public function verificapagoqr(Request $request)
@@ -197,9 +180,10 @@ class BisaController extends Controller
         //     return json_encode(["idQr" => $idqr, "carritorecibidoencontroller" => $carrito, "vendedor" => $vendedor, "EncCaja" => $enc_caja, "existepago" => $existepago, "garantia" => $linkgarantia]);
         // }
         $recibido = $request->all();
+        Log::info("Datos recibidos: " . json_encode($recibido));
         DB::table('beneficiario_plan')->update(['detalle' => $recibido]);
         $respuesta = ["codigo" => "0000", "mensaje" => "Registro Exitoso"];
-        return json_encode($respuesta);
+        return response()->json($respuesta);
     }
 
     public function registraventaqr($deposito, $carrito, $existepago, $enc_caja, $idventa, $hoyxareg, $vendedor)
@@ -284,18 +268,18 @@ class BisaController extends Controller
         $pdf->Write(10, "Para consultas comuniquese con el Whatsapp 77939732");
         // $pdf->Text(100,50,$comprador);
         $pdf->Output($nuevagarantia, 'F');
-        return $nombrearch;
+        return response()->json(['message' => 'PDF generado correctamente', 'filename' => $nombrearch]);
     }
 
     public function saludo(Request $request){
-        return response(json_encode("misaludo desde api"));
+        return response()->json("misaludo desde api");
     }
 
     public function veestadoqr(Request $request){
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
         if ($eltoken == '') {
-            return json_encode("eltoken vacio");
+            return response()->json(['error' => 'Token de Bisa no disponible'], 404);
         } else {
             $alias=$request->alias;
             // $alias = "qr24102024170718";
@@ -330,16 +314,22 @@ class BisaController extends Controller
                     "documentoCliente"=>$dataqr->objeto->documentoCliente,
                     "fechareg"=>date("Y-m-d H:i:s")
                     ]);
-                    return json_encode("PAGADO");
+                    return response()->json("PAGADO");
             }
             // $guardaqrgenerado = ["codigo" => $dataqr->codigo, "mensaje" => $dataqr->mensaje, "imagenQr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "fechaVencimiento" => $dataqr->objeto->fechaVencimiento, "bancoDestino" => $dataqr->objeto->bancoDestino, "cuentaDestino" => $dataqr->objeto->cuentaDestino, "idTransaccion" => $dataqr->objeto->idTransaccion, "esImagen" => $dataqr->objeto->esImagen, "fechareg" => date("Y-m-d H:i:s"),"alias"=>$alias];
             // Qrgenerado::create($guardaqrgenerado);
             // return json_encode(["imagenqr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "prods" => $prodsinv,"alias"=>$alias]);
-            return json_encode("NOPAGADO");
+            return response()->json("NOPAGADO");
         }
     }
     public function configuracion(){
-        $configuracion=DB::select("select * from configuracion where estado = 1 limit 1");
-        return json_encode($configuracion[0]);
+        $configuracion = $this->getConfiguracion();
+        return response()->json($configuracion);
+    }
+
+    private function getConfiguracion()
+    {
+        $configuracion = DB::select("select * from configuracion where estado = 1 limit 1");
+        return $configuracion[0] ?? null;
     }
 }

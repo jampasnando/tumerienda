@@ -61,7 +61,13 @@ Route::post(
     [BeneficiarioPlanController::class, 'store']
 );
 Route::middleware('auth:sanctum')->post('/oferta-fecha', [OfertaController::class, 'ofertaFecha']);
-Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
+// Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
 Route::get('/avisos', [AvisoController::class, 'avisos']);
 
-Route::get('/configuracion', [BisaController::class, 'configuracion']);
+// Route::get('/configuracion', [BisaController::class, 'configuracion']);
+
+Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
+Route::post("/obtieneqr","App\Http\Controllers\Api\BisaController@obtieneqr");
+Route::post("/verificapagoqr","App\Http\Controllers\Api\BisaController@verificapagoqr");
+Route::post("/veestadoqr","App\Http\Controllers\Api\BisaController@veestadoqr");
+Route::post("/configuracion","App\Http\Controllers\Api\BisaController@configuracion");
