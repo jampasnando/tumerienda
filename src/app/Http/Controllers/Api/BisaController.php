@@ -279,7 +279,7 @@ class BisaController extends Controller
         if ($eltoken == '') {
             return response()->json(['error' => 'Token de Bisa no disponible'], 404);
         } else {
-            $alias=$request->alias;
+            $alias=$request->input("alias");
             Log::info("Alias: ".$alias);
             // $alias = "qr24102024170718";
 
