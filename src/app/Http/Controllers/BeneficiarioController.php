@@ -214,6 +214,7 @@ class BeneficiarioController extends Controller
     {
         $planes = BeneficiarioPlan::with('plan')
             ->where('beneficiario_id', $beneficiarioId)
+            ->where('estado', true)
             ->get();
 
         return response()->json($planes);
