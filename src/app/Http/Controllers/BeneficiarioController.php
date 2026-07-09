@@ -193,7 +193,10 @@ class BeneficiarioController extends Controller
             return (int) optional($beneficiarioPlan->plan)->nroentregas;
         });
 
-        $totalSuscripcionesOfertas = Suscripcion::where('beneficiario_id', $beneficiarioId)->count();
+        $totalSuscripcionesOfertas = Suscripcion::
+            where('beneficiario_id', $beneficiarioId)
+            ->groupBy('fecha')
+            ->count();
 
         return response()->json([
             'mes' => (int)$mes,
