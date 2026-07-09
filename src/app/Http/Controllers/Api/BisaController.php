@@ -68,7 +68,7 @@ class BisaController extends Controller
 
     public function obtieneqr(Request $request)
     {
-        return json_encode($request->all());
+        // return json_encode($request->all());
         $configuracion = $this->getConfiguracion();
         Log::info("Configuracion obtenida: " . json_encode($configuracion));
         if (!$configuracion) {
@@ -83,7 +83,7 @@ class BisaController extends Controller
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
         Log::info("Token obtenido: " . $eltoken);
-        if ($eltoken == '') {
+        if ($eltoken == '' || $eltoken == null) {
             return response()->json(['error' => 'Token de Bisa no disponible'], 404);
         } else {
             // return $eltoken;
@@ -115,6 +115,7 @@ class BisaController extends Controller
     public function obtienetokenbisa()
     {
         $config = $this->getConfiguracion();
+        Log::info("Configuracion obtenida para obtienetokenbisa(): " . json_encode($config));
         $username = $config->username;
         $password = $config->password;
         $apikey = $config->apikey;
@@ -143,8 +144,13 @@ class BisaController extends Controller
             $response = curl_exec($curl);
 
             curl_close($curl);
+            if((!$response) || ($response == '')){
+                Log::error("Error al obtener token de Bisa: Respuesta vacía");
+                return '';
+            }
             $data = json_decode($response);
             Log::info("Respuesta de obtienetoken bisa " . json_encode($data));
+
             $token = $data->objeto->token;
             return $token;
 
