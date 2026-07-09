@@ -9,6 +9,7 @@ use App\Models\BeneficiarioPlan;
 use App\Models\BeneficiarioTutor;
 use App\Models\Colegio;
 use App\Models\Oferta;
+use App\Models\Suscripcion;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -176,22 +177,29 @@ class BeneficiarioController extends Controller
             }
 
             return [
-
                 'fecha' => $oferta->fecha,
-
                 'oferta_id' => $oferta->id,
-
                 'suscripcion_id' => $suscripcion?->id,
-
                 'estado' => $estado,
-
                 'color' => $color,
             ];
         });
 
+        $planesDelBeneficiario = BeneficiarioPlan::where('beneficiario_id', $beneficiarioId)
+            ->with('plan')
+            ->get();
+
+        $totalEntregasPlanes = $planesDelBeneficiario->sum(function ($beneficiarioPlan) {
+            return (int) optional($beneficiarioPlan->plan)->nroentregas;
+        });
+
+        $totalSuscripcionesOfertas = Suscripcion::where('beneficiario_id', $beneficiarioId)->count();
+
         return response()->json([
             'mes' => (int)$mes,
             'anio' => (int)$anio,
+            'total_entregas_planes' => $totalEntregasPlanes,
+            'total_suscripciones_ofertas' => $totalSuscripcionesOfertas,
             'items' => $resultado,
         ]);
     }
