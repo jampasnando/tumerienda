@@ -68,6 +68,7 @@ class BisaController extends Controller
 
     public function obtieneqr(Request $request)
     {
+        return json_encode($request->all());
         $configuracion = $this->getConfiguracion();
         Log::info("Configuracion obtenida: " . json_encode($configuracion));
         if (!$configuracion) {
