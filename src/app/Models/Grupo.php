@@ -9,7 +9,8 @@ class Grupo extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'orden'
     ];
     public function menuOfertas()
     {

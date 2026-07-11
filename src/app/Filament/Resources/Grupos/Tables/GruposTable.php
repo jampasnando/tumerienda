@@ -34,6 +34,7 @@ class GruposTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('orden')
             ->filters([
                 //
             ])

@@ -12,6 +12,8 @@ class GrupoForm
         return $schema
             ->components([
                 TextInput::make('nombre'),
+                TextInput::make('orden')
+                    ->numeric(),
             ]);
     }
 }

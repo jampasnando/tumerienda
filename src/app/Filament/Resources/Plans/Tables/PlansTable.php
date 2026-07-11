@@ -48,6 +48,7 @@ class PlansTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
             ])
+            ->defaultSort('orden')
             ->filters([
                 //
             ])
