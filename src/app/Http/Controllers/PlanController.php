@@ -64,7 +64,9 @@ class PlanController extends Controller
     }
     public function abiertos()
     {
-        $planesAbiertos = Plan::where('estado', true)->get();
+        $planesAbiertos = Plan::where('estado', true)
+            ->orderBy('orden', 'asc')
+            ->get();
         return response()->json($planesAbiertos);
     }
 }

@@ -144,6 +144,7 @@ class OfertaController extends Controller
             ->join('menus', 'menus.id', '=', 'menu_oferta.menu_id')
             ->join('grupos', 'grupos.id', '=', 'menu_oferta.grupo_id')
             ->where('menu_oferta.oferta_id', $oferta->id)
+            ->orderBy('grupos.orden', 'asc')
             ->select(
                 'menu_oferta.grupo_id',
                 'menus.id',
