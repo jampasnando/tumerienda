@@ -22,6 +22,8 @@ class PlanForm
                 Textarea::make('descripcion')
                     ->columnSpanFull(),
                 Toggle::make('estado'),
+                TextInput::make('orden')
+                    ->numeric(),
                 FileUpload::make('qr')
                     ->image()
                     ->disk('public')

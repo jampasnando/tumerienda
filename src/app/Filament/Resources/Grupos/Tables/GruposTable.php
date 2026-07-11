@@ -14,9 +14,13 @@ class GruposTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->reorderable('orden')
             ->columns([
                 TextColumn::make('nombre')
                     ->searchable(),
+                TextColumn::make('orden')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -1,39 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\Plans\Tables;
+namespace App\Filament\Resources\Artes\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class PlansTable
+class ArtesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->reorderable('orden')
             ->columns([
-                TextColumn::make('nombre')
-                    ->searchable(),
-                TextColumn::make('precio')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('nroentregas')
-                    ->numeric()
-                    ->sortable(),
-                IconColumn::make('estado')
-                    ->boolean(),
-                TextColumn::make('orden')
-                    ->numeric()
-                    ->sortable(),
-                ImageColumn::make('qr')
-                    ->circular()
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -42,17 +23,18 @@ class PlansTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
+                ImageColumn::make('marcologin')
+                    ->label('Marco de Login')
+                    ->disk('public')
+                    ->openUrlInNewTab(
+                        fn ($record) => $record->marcologin ? asset('storage/' . $record->marcologin) : null
+                    )
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                // ViewAction::make(),
                 EditAction::make(),
             ])
             ->toolbarActions([
