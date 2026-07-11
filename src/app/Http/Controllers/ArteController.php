@@ -12,9 +12,15 @@ class ArteController extends Controller
      */
     public function index()
     {
+        $arte = Arte::first();
+
+        if ($arte) {
+            $arte = $arte->makeHidden(['id', 'created_at', 'updated_at']);
+        }
+
         return response()->json([
             'status' => 'success',
-            'artes' => Arte::first(),
+            'artes' => $arte,
         ]);
     }
 
