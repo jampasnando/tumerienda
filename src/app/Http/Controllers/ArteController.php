@@ -12,7 +12,10 @@ class ArteController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'status' => 'success',
+            'artes' => Arte::first(),
+        ]);
     }
 
     /**

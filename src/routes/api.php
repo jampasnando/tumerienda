@@ -71,3 +71,4 @@ Route::post("/obtieneqr","App\Http\Controllers\Api\BisaController@obtieneqr");
 Route::post("/verificapagoqr","App\Http\Controllers\Api\BisaController@verificapagoqr");
 Route::post("/veestadoqr","App\Http\Controllers\Api\BisaController@veestadoqr");
 Route::post("/configuracion","App\Http\Controllers\Api\BisaController@configuracion");
+Route::get("/artes", [\App\Http\Controllers\ArteController::class, 'index']);

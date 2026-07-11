@@ -14,7 +14,7 @@ class ColegioController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'colegios' => Colegio::all(),
+            'colegios' => Colegio::orderBy('nombre', 'asc')->get(),
         ]);
     }
 

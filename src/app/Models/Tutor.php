@@ -19,7 +19,8 @@ class Tutor extends Model
         'genero',
         'comentarios',
         'email',
-        'password'
+        'password',
+        'apellidos'
     ];
     public function beneficiarios()
 {
