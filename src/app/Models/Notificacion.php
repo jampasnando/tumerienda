@@ -10,6 +10,8 @@ class Notificacion extends Model
     protected $fillable = [
         'notificaciones',
         'donde',
-        'estado'
+        'estado',
+        'logo',
+        'color'
     ];
 }

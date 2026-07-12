@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Notificaciones\Schemas;
 
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor\TextColor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -20,6 +23,14 @@ class NotificacionesForm
                         'inicio'=>'Inicio',
                         'calendario'=>'Calendario'
                     ]),
+                FileUpload::make('logo')
+                    ->disk('public')
+                    ->directory('artes')
+                    ->image()
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
+                ColorPicker::make('color'),
                 Toggle::make('estado')
             ]);
     }
