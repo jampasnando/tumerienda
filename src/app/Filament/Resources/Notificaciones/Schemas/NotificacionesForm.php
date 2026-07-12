@@ -21,7 +21,8 @@ class NotificacionesForm
                 Select::make('donde')
                     ->options([
                         'inicio'=>'Inicio',
-                        'calendario'=>'Calendario'
+                        'calendario'=>'Calendario',
+                        'hijos' => 'Hijos'
                     ]),
                 FileUpload::make('logo')
                     ->disk('public')
