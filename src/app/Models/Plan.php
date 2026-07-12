@@ -16,7 +16,9 @@ class Plan extends Model
         'nroentregas',
         'descripcion',
         'qr',
-        'orden'
+        'orden',
+        'imagen',
+        'color'
     ];
     public function beneficiarios()
     {

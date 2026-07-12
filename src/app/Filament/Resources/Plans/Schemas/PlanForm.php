@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Plans\Schemas;
 
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -21,6 +22,14 @@ class PlanForm
                     ->numeric(),
                 Textarea::make('descripcion')
                     ->columnSpanFull(),
+                FileUpload::make('imagen')
+                    ->disk('public')
+                    ->directory('planes')
+                    ->image()
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
+                ColorPicker::make('color'),
                 Toggle::make('estado'),
                 TextInput::make('orden')
                     ->numeric(),
