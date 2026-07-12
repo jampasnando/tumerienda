@@ -10,5 +10,6 @@ class Arte extends Model
     protected $fillable = [
         'id',
         'marcologin',
+        'aviso1'
     ];
 }

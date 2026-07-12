@@ -20,6 +20,14 @@ class ArteForm
                     ->downloadable()
                     ->imageEditor()
                     ->previewable(),
+                FileUpload::make('aviso1')
+                    ->label('Aviso 1')
+                    ->image()
+                    ->directory('artes')
+                    ->disk('public')
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
             ]);
     }
 }
