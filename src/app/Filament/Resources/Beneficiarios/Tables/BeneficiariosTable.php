@@ -18,9 +18,11 @@ class BeneficiariosTable
     {
         return $table
             ->columns([
+                TextColumn::make('codigo'),
                 TextColumn::make('nombre')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('nombrecolegioActivo.colegio.nombre'),
                 TextColumn::make('fechanac')
                     ->date()
                     ->sortable(),
@@ -43,6 +45,7 @@ class BeneficiariosTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('codigo')
             ->filters([
                 TrashedFilter::make(),
             ])
