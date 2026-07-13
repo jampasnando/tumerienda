@@ -22,7 +22,8 @@ class NotificacionesForm
                     ->options([
                         'inicio'=>'Inicio',
                         'calendario'=>'Calendario',
-                        'hijos' => 'Hijos'
+                        'hijos' => 'Hijos',
+                        'sinplanes'=> 'Sin plan'
                     ]),
                 FileUpload::make('logo')
                     ->disk('public')
