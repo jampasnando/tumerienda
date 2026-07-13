@@ -48,10 +48,19 @@ class BeneficiarioController extends Controller
         $user = $request->user();
 
         // 🔹 1. Crear beneficiario
+        $colegio = Colegio::find($request->colegio_id);
+
+        $correlativo = BeneficiarioColegio::where('colegio_id', $request->colegio_id)->count() + 1;
+        $codigo = CodigoColegio::generar(
+            $colegio->nombre,
+            $correlativo
+        );
+
         $beneficiario = Beneficiario::create([
             'nombre' => $request->nombre,
             'fechanac' => date('Y-m-d', strtotime($request->fechanac)),
             'genero' => $request->genero,
+            'codigo' => $codigo,
             'comentarios' => $request->comentarios,
             'activo' => true,
         ]);
@@ -63,11 +72,9 @@ class BeneficiarioController extends Controller
             'tipo' => 'padre',
             'activo' => true,
         ]);
-        $colegio = Colegio::find($request->colegio_id);
-
-        $codigo= CodigoColegio::generar(
+        $codigo = CodigoColegio::generar(
             $colegio->nombre,
-            $beneficiario->id
+            $correlativo
         );
         Log::info('Código generado para beneficiario: ' . $codigo);
         BeneficiarioColegio::create([

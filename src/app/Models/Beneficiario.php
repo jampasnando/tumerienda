@@ -12,6 +12,7 @@ class Beneficiario extends Model
         'nombre',
         'fechanac',
         'genero',
+        'codigo',
         'comentarios',
         'colegio_id',
         'tutor_id',
