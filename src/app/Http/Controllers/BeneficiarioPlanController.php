@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Beneficiario;
 use App\Models\BeneficiarioPlan;
 use App\Models\Oferta;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class BeneficiarioPlanController extends Controller
 {
@@ -38,7 +41,36 @@ class BeneficiarioPlanController extends Controller
                 'nrorecibidos' => 'required|integer',
                 'detalle' => 'nullable|string',
             ]);
+            $beneficiario = Beneficiario::with('tutorActivo.tutor')
+                ->findOrFail($request->beneficiario_id);
+
+            $nombreTutor = $beneficiario->tutorActivo?->tutor?->nombre;
+            $correoTutor = $beneficiario->tutorActivo?->tutor?->email;
+            $plan=Plan::find($request->plan_id)->nombre;
+            $responde=["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan];
+            Log::inf('Antes de crear beneficiarioPlan, nombreTutor,correoTutor,plan',["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan]);
+            return response()->json($responde);
             BeneficiarioPlan::create($request->all());
+            try {
+
+                Mail::raw('Gracias por su Suscripción al plan: '.$plan.' para '.$beneficiario->nombre.' En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.', function ($message,$beneficiario,$correoTutor) {
+                    $message->to($correoTutor)
+                            ->subject('Suscripción recibida para '.$beneficiario->nombre);
+                });
+
+                return response()->json([
+                    'ok' => true,
+                    'mensaje' => 'Correo enviado correctamente.'
+                ]);
+
+            } catch (\Exception $e) {
+
+                return response()->json([
+                    'ok' => false,
+                    'error' => $e->getMessage()
+                ],500);
+
+            }
     }
 
     /**
