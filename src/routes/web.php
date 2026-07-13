@@ -17,7 +17,7 @@ Route::get('/mail-test', function () {
 
         Mail::raw('segundo correo en teoria desde brevo.', function ($message) {
             $message->to('jampasnando@gmail.com')
-                    ->subject('el subject es correo de tumerienda');
+                    ->subject('el subject es correo de tumerienda 2');
         });
 
         return response()->json([
