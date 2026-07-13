@@ -32,7 +32,8 @@ class PlanForm
                 ColorPicker::make('color'),
                 Toggle::make('estado'),
                 TextInput::make('orden')
-                    ->numeric(),
+                    ->numeric()
+                    ->default(0),
                 FileUpload::make('qr')
                     ->image()
                     ->disk('public')
