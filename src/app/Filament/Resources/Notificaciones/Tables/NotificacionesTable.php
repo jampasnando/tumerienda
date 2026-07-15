@@ -20,6 +20,7 @@ class NotificacionesTable
                 TextColumn::make('notificaciones'),
                 TextColumn::make('donde'),
                 ImageColumn::make('logo')
+                    ->label('logo/imagen')
                     ->disk('public')
                     ->url(fn ($record) => $record->foto ? asset('storage/' . $record->foto) : null)
                     ->openUrlInNewTab(),

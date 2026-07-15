@@ -27,6 +27,7 @@ class NotificacionesForm
                         'qrpagado' => 'QR pagado'
                     ]),
                 FileUpload::make('logo')
+                    ->label('logo/imagen')
                     ->disk('public')
                     ->directory('artes')
                     ->image()
