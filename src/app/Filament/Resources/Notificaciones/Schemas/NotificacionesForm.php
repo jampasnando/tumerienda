@@ -23,7 +23,8 @@ class NotificacionesForm
                         'inicio'=>'Inicio',
                         'calendario'=>'Calendario',
                         'hijos' => 'Hijos',
-                        'sinplanes'=> 'Sin plan'
+                        'sinplanes'=> 'Sin plan',
+                        'qrpagado' => 'QR pagado'
                     ]),
                 FileUpload::make('logo')
                     ->disk('public')
