@@ -37,6 +37,13 @@ class ArtesTable
                         fn ($record) => $record->marcologin ? asset('storage/' . $record->marcologin) : null
                     )
                     ->searchable(),
+                TextColumn::make('slides'),
+                ImageColumn::make('pie')
+                    ->label('Pie')
+                    ->disk('public')
+                    ->openUrlInNewTab(
+                        fn ($record) => $record->marcologin ? asset('storage/' . $record->marcologin) : null
+                    )
             ])
             ->filters([
                 //

@@ -28,6 +28,24 @@ class ArteForm
                     ->downloadable()
                     ->imageEditor()
                     ->previewable(),
+                FileUpload::make('slides')
+                    ->label('Slides')
+                    ->image()
+                    ->multiple()
+                    ->reorderable()
+                    ->directory('artes')
+                    ->disk('public')
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
+                FileUpload::make('pie')
+                    ->label('Pie')
+                    ->image()
+                    ->directory('artes')
+                    ->disk('public')
+                    ->downloadable()
+                    ->imageEditor()
+                    ->previewable(),
             ]);
     }
 }
