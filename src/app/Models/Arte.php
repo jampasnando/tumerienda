@@ -12,6 +12,8 @@ class Arte extends Model
         'marcologin',
         'aviso1',
         'slides',
-        'pie'
+        'pie',
+        'fondologin',
+        'margen_inf_login'
     ];
 }
