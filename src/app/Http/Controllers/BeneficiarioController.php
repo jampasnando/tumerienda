@@ -155,7 +155,7 @@ class BeneficiarioController extends Controller
 
             ->orderBy('fecha')
             ->get();
-        Log::inf("suscripcioens",["ofertasconsusc"=>$ofertas]);
+        Log::info("suscripcioens",["ofertasconsusc"=>$ofertas]);
         $resultado = $ofertas->map(function ($oferta) {
 
             $suscripcion = $oferta->suscripciones->first();
