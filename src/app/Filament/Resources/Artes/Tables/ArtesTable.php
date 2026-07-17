@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Artes\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -43,7 +44,9 @@ class ArtesTable
                     ->disk('public')
                     ->openUrlInNewTab(
                         fn ($record) => $record->marcologin ? asset('storage/' . $record->marcologin) : null
-                    )
+                    ),
+                ColorColumn::make('fondologin'),
+                TextColumn::make('margen_inf_login')
             ])
             ->filters([
                 //

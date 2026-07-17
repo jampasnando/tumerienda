@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Artes\Schemas;
 
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -46,6 +47,12 @@ class ArteForm
                     ->downloadable()
                     ->imageEditor()
                     ->previewable(),
+                ColorPicker::make('fondologin')
+                    ->label('ColorFondoLogin'),
+                TextInput::make('margen_inf_login')
+                    ->label('Margen Inf Login')
+                    ->default(5)
+                    ->numeric()
             ]);
     }
 }

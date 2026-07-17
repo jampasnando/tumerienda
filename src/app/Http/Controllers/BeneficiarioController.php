@@ -138,7 +138,7 @@ class BeneficiarioController extends Controller
     {
         $mes = request('mes', Carbon::now()->month);
         $anio = request('anio', Carbon::now()->year);
-
+        Log::info('mes, ano, beneficairioId: ',["mes"=>$mes,"ano"=>$anio,"idbenef"=>$beneficiarioId]);
         $inicio = Carbon::create($anio, $mes, 1)->startOfMonth();
         $fin = Carbon::create($anio, $mes, 1)->endOfMonth();
 
