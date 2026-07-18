@@ -129,6 +129,10 @@ class OfertaController extends Controller
         $fecha = $request->fecha;
         $beneficiarioId = $request->beneficiario_id;
 
+        $hoy = Carbon::today()->startOfDay();
+        $fechaSolicitud = Carbon::parse($fecha)->startOfDay();
+        $sepuede = $fechaSolicitud->greaterThanOrEqualTo($hoy->copy()->addDays(2)) ? 'si' : 'no';
+
         // Oferta de esa fecha
         $oferta = Oferta::where('fecha', $fecha)
             ->where('activo', 1)
@@ -136,7 +140,8 @@ class OfertaController extends Controller
 
         if (!$oferta) {
             return response()->json([
-                'grupos' => []
+                'grupos' => [],
+                'sepuede' => $sepuede
             ]);
         }
 
@@ -157,7 +162,7 @@ class OfertaController extends Controller
                 'grupos.orden as ordengrupo'
             )
             ->get();
-        Log::debug('menusOferta', ['data' => $menusOferta]);
+        // Log::debug('menusOferta', ['data' => $menusOferta]);
         // Suscripciones existentes
         $suscripciones = DB::table('suscripciones')
             ->where('beneficiario_id', $beneficiarioId)
@@ -196,10 +201,11 @@ class OfertaController extends Controller
         foreach (collect($gruposPorNombre)->sortBy('ordengrupo')->values() as $grupo) {
             $grupos[$grupo['nombre']] = $grupo['menus'];
         }
-        Log::debug('grupos', ['data' => $grupos]);
+        // Log::debug('grupos', ['data' => $grupos]);
         return response()->json([
             'oferta_id' => $oferta->id,
-            'grupos' => $grupos
+            'grupos' => $grupos,
+            'sepuede' => $sepuede,
         ]);
     }
 }
