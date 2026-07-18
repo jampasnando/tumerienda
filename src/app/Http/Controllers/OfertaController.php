@@ -193,10 +193,10 @@ class OfertaController extends Controller
 
         $grupos = [];
 
-        foreach (collect($gruposPorNombre)->sortBy('ordengrupo','SORT_REGULAR',false)->values() as $grupo) {
+        foreach (collect($gruposPorNombre)->sortBy('ordengrupo')->values() as $grupo) {
             $grupos[$grupo['nombre']] = $grupo['menus'];
         }
-
+        Log::debug('grupos', ['data' => $grupos]);
         return response()->json([
             'oferta_id' => $oferta->id,
             'grupos' => $grupos
