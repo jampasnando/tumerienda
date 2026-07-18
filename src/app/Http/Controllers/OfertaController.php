@@ -6,6 +6,7 @@ use App\Models\Oferta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OfertaController extends Controller
 {
@@ -156,7 +157,7 @@ class OfertaController extends Controller
                 'grupos.orden as ordengrupo'
             )
             ->get();
-
+        Log::debug('menusOferta', ['data' => $menusOferta]);
         // Suscripciones existentes
         $suscripciones = DB::table('suscripciones')
             ->where('beneficiario_id', $beneficiarioId)
