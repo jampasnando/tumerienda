@@ -48,8 +48,8 @@ class BeneficiarioPlanController extends Controller
             $correoTutor = $beneficiario->tutorActivo?->tutor?->email;
             $plan=Plan::find($request->plan_id)->nombre;
             $responde=["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan];
-            Log::inf('Antes de crear beneficiarioPlan, nombreTutor,correoTutor,plan',["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan]);
-            return response()->json($responde);
+            // Log::info('Antes de crear beneficiarioPlan, nombreTutor,correoTutor,plan',["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan]);
+            // return response()->json($responde);
             BeneficiarioPlan::create($request->all());
             try {
 
