@@ -165,16 +165,21 @@ class OfertaController extends Controller
             ->pluck('menu_id')
             ->toArray();
 
-        // Agrupar
-        $grupos = [];
+        // Agrupar preservando el orden real de los grupos
+        $gruposPorNombre = [];
 
         foreach ($menusOferta as $menu) {
+            $nombreGrupo = $menu->nombre_grupo;
 
-            if (!isset($grupos[$menu->nombre_grupo])) {
-                $grupos[$menu->nombre_grupo] = [];
+            if (!isset($gruposPorNombre[$nombreGrupo])) {
+                $gruposPorNombre[$nombreGrupo] = [
+                    'nombre' => $nombreGrupo,
+                    'ordengrupo' => $menu->ordengrupo,
+                    'menus' => []
+                ];
             }
 
-            $grupos[$menu->nombre_grupo][] = [
+            $gruposPorNombre[$nombreGrupo]['menus'][] = [
                 'id' => $menu->id,
                 'nombre' => $menu->nombre,
                 'descripcion' => $menu->descripcion,
@@ -184,6 +189,12 @@ class OfertaController extends Controller
                 'nombre_grupo' => $menu->nombre_grupo,
                 'ordengrupo' => $menu->ordengrupo
             ];
+        }
+
+        $grupos = [];
+
+        foreach (collect($gruposPorNombre)->sortBy('ordengrupo')->values() as $grupo) {
+            $grupos[$grupo['nombre']] = $grupo['menus'];
         }
 
         return response()->json([
