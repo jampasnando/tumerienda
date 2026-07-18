@@ -131,7 +131,7 @@ class OfertaController extends Controller
 
         $hoy = Carbon::today()->startOfDay();
         $fechaSolicitud = Carbon::parse($fecha)->startOfDay();
-        $sepuede = $fechaSolicitud->greaterThanOrEqualTo($hoy->copy()->addDays(3)) ? 'si' : 'no';
+        $sepuede = $fechaSolicitud->greaterThanOrEqualTo($hoy->copy()->addDays(2)) ? 'si' : 'no';
 
         // Oferta de esa fecha
         $oferta = Oferta::where('fecha', $fecha)
