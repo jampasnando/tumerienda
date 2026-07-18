@@ -152,7 +152,8 @@ class OfertaController extends Controller
                 'menus.descripcion',
                 'menus.foto',
                 'menus.precio',
-                'grupos.nombre as nombre_grupo'
+                'grupos.nombre as nombre_grupo',
+                'grupos.orden as ordengrupo'
             )
             ->get();
 
@@ -179,7 +180,8 @@ class OfertaController extends Controller
                 'foto' => $menu->foto,
                 'precio' => $menu->precio,
                 'seleccionado' => in_array($menu->id, $suscripciones),
-                'nombre_grupo' => $menu->nombre_grupo
+                'nombre_grupo' => $menu->nombre_grupo,
+                'ordengrupo' => $menu->ordengrupo
             ];
         }
 
