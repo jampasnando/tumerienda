@@ -107,7 +107,7 @@ class BeneficiarioPlanController extends Controller
     public function planesBeneficiario($beneficiarioId)
     {
         $planes = BeneficiarioPlan::with('plan')
-            ->with('planes')
+            // ->with('planes')
             ->where('beneficiario_id', $beneficiarioId)
             ->get();
             // ->map(function ($bp) {
