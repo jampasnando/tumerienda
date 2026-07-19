@@ -109,23 +109,23 @@ class BeneficiarioPlanController extends Controller
         $planes = BeneficiarioPlan::with('plan')
             ->with('planes')
             ->where('beneficiario_id', $beneficiarioId)
-            ->get()
-            ->map(function ($bp) {
-                return [
-                    'beneficiario_id' => $bp->beneficiario_id,
-                    'created_at' => $bp->created_at,
-                    'id' => $bp->id,
-                    'estado' => $bp->estado,
-                    'nrorecibidos' => $bp->nrorecibidos,
-                    'plan_id' => $bp->plan_id,
-                    'plan_nombre' => $bp->plan->nombre,
-                    'plan_precio' => $bp->plan->precio,
-                    'plan_nroentregas' => $bp->plan->nroentregas,
-                    'plan_descripcion' => $bp->plan->descripcion,
-                    'fecha_inicio' => $bp->fecha_inicio,
-                    'fecha_fin' => $bp->fecha_fin,
-                ];
-            });
+            ->get();
+            // ->map(function ($bp) {
+            //     return [
+            //         'beneficiario_id' => $bp->beneficiario_id,
+            //         'created_at' => $bp->created_at,
+            //         'id' => $bp->id,
+            //         'estado' => $bp->estado,
+            //         'nrorecibidos' => $bp->nrorecibidos,
+            //         'plan_id' => $bp->plan_id,
+            //         'plan_nombre' => $bp->plan->nombre,
+            //         'plan_precio' => $bp->plan->precio,
+            //         'plan_nroentregas' => $bp->plan->nroentregas,
+            //         'plan_descripcion' => $bp->plan->descripcion,
+            //         'fecha_inicio' => $bp->fecha_inicio,
+            //         'fecha_fin' => $bp->fecha_fin,
+            //     ];
+            // });
 
         return response()->json($planes);
     }
