@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\BeneficiarioPlans\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -27,6 +28,7 @@ class BeneficiarioPlanForm
                 TextInput::make('nrorecibidos')
                     ->numeric()
                     ->default(0),
+                Textarea::make('detalle')
                 // TextInput::make('pagado')
                 //     ->numeric(),
             ]);
