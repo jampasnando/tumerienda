@@ -11,6 +11,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use PhpParser\Node\Stmt\Label;
 
 class BeneficiariosTable
 {
@@ -18,7 +19,8 @@ class BeneficiariosTable
     {
         return $table
             ->columns([
-                TextColumn::make('colegio.codigo'),
+                TextColumn::make('nombrecolegioActivo.codigo')
+                    ->label('Código'),
                 TextColumn::make('nombre')
                     ->sortable()
                     ->searchable(),
