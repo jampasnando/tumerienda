@@ -18,7 +18,7 @@ class BeneficiariosTable
     {
         return $table
             ->columns([
-                TextColumn::make('codigo'),
+                TextColumn::make('colegio.codigo'),
                 TextColumn::make('nombre')
                     ->sortable()
                     ->searchable(),
