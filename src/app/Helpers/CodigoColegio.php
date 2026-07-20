@@ -42,8 +42,8 @@ class CodigoColegio
             }
         }
 
-        $numero = str_pad($beneficiarioId, 5, '0', STR_PAD_LEFT);
-
+        // $numero = str_pad($beneficiarioId, 5, '0', STR_PAD_LEFT);
+        $numero = $beneficiarioId;
         return $sigla . '-' . $numero;
     }
 }

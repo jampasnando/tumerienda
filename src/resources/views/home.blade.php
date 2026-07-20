@@ -318,6 +318,7 @@
       <div class="hero-actions">
         <a href="#registro" class="btn btn-primary">Quiero mi merienda 🍓</a>
         <a href="#como-funciona" class="btn btn-secondary">Ver cómo funciona</a>
+        <a href="#como-funciona" class="btn btn-secondary">Descarga APP</a>
       </div>
       <div class="trust-row">
         <div class="avatars"><span>🧑</span><span>👩</span><span>🧒</span></div>
