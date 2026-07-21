@@ -50,13 +50,26 @@ class BeneficiarioPlanController extends Controller
             $responde=["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan];
             // Log::info('Antes de crear beneficiarioPlan, nombreTutor,correoTutor,plan',["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan]);
             // return response()->json($responde);
-            BeneficiarioPlan::create($request->all());
+            // BeneficiarioPlan::create($request->all());
+            BeneficiarioPlan::firstOrCreate(
+                [
+                    'beneficiario_id' => $request->beneficiario_id,
+                    'plan_id' => $request->plan_id,
+                    'detalle' => $request->detalle
+                ],
+                $request->all()
+            );
             try {
 
-                Mail::raw('Gracias por su Suscripción al plan: '.$plan.' para '.$beneficiario->nombre.' En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.', function ($message,$beneficiario,$correoTutor) {
-                    $message->to($correoTutor)
-                            ->subject('Suscripción recibida para '.$beneficiario->nombre);
-                });
+               Mail::raw(
+                    'Gracias por su Suscripción al plan: '.$plan.
+                    ' para '.$beneficiario->nombre.
+                    '. En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.',
+                    function ($message) use ($beneficiario, $correoTutor) {
+                        $message->to($correoTutor)
+                                ->subject('Suscripción recibida para '.$beneficiario->nombre);
+                    }
+                );
 
                 return response()->json([
                     'ok' => true,
