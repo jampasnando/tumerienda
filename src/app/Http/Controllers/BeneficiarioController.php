@@ -155,6 +155,13 @@ class BeneficiarioController extends Controller
 
             ->orderBy('fecha')
             ->get();
+
+        $ofertassucritas = Oferta::where('activo', 1)
+            ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
+                $q->where('beneficiario_id', $beneficiarioId);
+            }])
+            ->get();
+
         Log::info("suscripcioens",["ofertasconsusc"=>$ofertas]);
         $resultado = $ofertas->map(function ($oferta) {
 
@@ -215,6 +222,7 @@ class BeneficiarioController extends Controller
             'total_suscripciones_ofertas' => $totalSuscripcionesOfertas,
             'total_suscripciones_fechas' => $totalSuscripcionesFechas,
             'items' => $resultado,
+            'ofertassuscritas' => $ofertassucritas
         ]);
     }
     public function beneficiarioPlanes($beneficiarioId)
