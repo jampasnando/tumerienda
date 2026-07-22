@@ -318,7 +318,7 @@
       <div class="hero-actions">
         <a href="#registro" class="btn btn-primary">Quiero mi merienda 🍓</a>
         <a href="#como-funciona" class="btn btn-secondary">Ver cómo funciona</a>
-        <a href="#como-funciona" class="btn btn-secondary">Descarga APP</a>
+        <a href="#registro" class="btn btn-secondary">Descarga APP</a>
       </div>
       <div class="trust-row">
         <div class="avatars"><span>🧑</span><span>👩</span><span>🧒</span></div>
@@ -455,6 +455,16 @@
       <svg viewBox="0 0 32 32" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16 3C9.1 3 3.5 8.6 3.5 15.5c0 2.4.7 4.7 1.9 6.7L3 29l7-2.4c1.9 1.1 4.1 1.6 6 1.6 6.9 0 12.5-5.6 12.5-12.5S22.9 3 16 3zm0 22.7c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.2 1.4 1.4-4.1-.2-.4c-1.1-1.7-1.7-3.7-1.7-5.7C5.5 9.7 10.2 5 16 5s10.5 4.7 10.5 10.5S21.8 25.7 16 25.7zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-2-1.8-2.3-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.8-1-2.4-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.2 3.4 5.3 4.7.7.3 1.3.5 1.8.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg>
       <span>Suscríbete al 77413374</span>
     </a>
+    <a class="btn btn-secondary whatsapp-btn" rel="noopener" href="{{ asset('downloads/tumerienda.apk') }}" >
+      <span>Descarga al APP</span>
+    </a>
+    <div style="width:100%;display:flex;justify-content:center;margin:1em;">
+        <img
+            src="{{ asset('images/tumerienda.png') }}"
+            alt="Código QR para descargar Tu Merienda"
+            class="img-fluid"
+            style="max-width: 250px;">
+    </div>
     <p class="cta-note">tumerienda.sistembo.online — descarga la app y recibe tu merienda directo en tu cole</p>
   </div>
 </section>

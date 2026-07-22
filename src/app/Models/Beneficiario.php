@@ -58,4 +58,8 @@ public function beneficiarioPlans()
 {
     return $this->hasMany(\App\Models\BeneficiarioPlan::class)->withoutTrashed();
 }
+public function beneficiariosuscripciones()
+{
+    return $this->hasMany(Suscripcion::class,'beneficiario_id');
+}
 }

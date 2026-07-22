@@ -73,4 +73,4 @@ Route::post("/veestadoqr","App\Http\Controllers\Api\BisaController@veestadoqr");
 Route::post("/configuracion","App\Http\Controllers\Api\BisaController@configuracion");
 Route::get("/artes", [\App\Http\Controllers\ArteController::class, 'index']);
 Route::get("/notificaciones", [\App\Http\Controllers\NotificacionController::class, 'index']);
-
+Route::get("/tutor/{id}",[\App\Http\Controllers\BeneficiarioTutorController::class,'entregashoy']);

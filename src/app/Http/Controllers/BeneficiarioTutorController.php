@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeneficiarioTutor;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BeneficiarioTutorController extends Controller
@@ -62,4 +63,20 @@ class BeneficiarioTutorController extends Controller
     {
         //
     }
+    public function entregashoy($tutor_id)
+{
+    $hoy = Carbon::today()->toDateString();
+
+    $entregas = BeneficiarioTutor::where('tutor_id', $tutor_id)
+        ->with([
+            'beneficiario',
+            'beneficiario.beneficiariosuscripciones' => function ($query) use ($hoy) {
+                $query->whereDate('fecha', $hoy)
+                    ->with('menu');
+            }
+        ])
+        ->get();
+
+    return response()->json($entregas);
+}
 }
