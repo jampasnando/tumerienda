@@ -17,7 +17,8 @@ class NotificacionesTable
     {
         return $table
             ->columns([
-                TextColumn::make('notificaciones'),
+                TextColumn::make('notificaciones')
+                    ->wrap(),
                 TextColumn::make('donde'),
                 ImageColumn::make('logo')
                     ->label('logo/imagen')
