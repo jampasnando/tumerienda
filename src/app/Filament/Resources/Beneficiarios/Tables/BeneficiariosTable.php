@@ -24,6 +24,9 @@ class BeneficiariosTable
                 TextColumn::make('nombre')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('apellidos')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('nombrecolegioActivo.colegio.nombre'),
                 TextColumn::make('fechanac')
                     ->date()

@@ -10,6 +10,7 @@ class Beneficiario extends Model
     use SoftDeletes;
     protected $fillable = [
         'nombre',
+        'apellidos',
         'fechanac',
         'genero',
         'codigo',

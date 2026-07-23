@@ -128,7 +128,8 @@ class OfertaController extends Controller
     {
         $fecha = $request->fecha;
         $beneficiarioId = $request->beneficiario_id;
-
+        $config = DB::select('select diasantespedido from configuracion where estado=1');
+        dd($config);
         $hoy = Carbon::today()->startOfDay();
         $fechaSolicitud = Carbon::parse($fecha)->startOfDay();
         $sepuede = $fechaSolicitud->greaterThanOrEqualTo($hoy->copy()->addDays(2)) ? 'si' : 'no';

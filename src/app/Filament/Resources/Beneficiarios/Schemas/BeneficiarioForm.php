@@ -18,6 +18,7 @@ class BeneficiarioForm
                 Section::make('Información Beneficiario')
                     ->schema([
                         TextInput::make('nombre'),
+                        TextInput::make('apellidos'),
                         DatePicker::make('fechanac'),
                         Select::make('genero')
                             ->options([
