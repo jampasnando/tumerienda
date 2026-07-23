@@ -58,6 +58,7 @@ class BeneficiarioController extends Controller
 
         $beneficiario = Beneficiario::create([
             'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
             'fechanac' => date('Y-m-d', strtotime($request->fechanac)),
             'genero' => $request->genero,
             'codigo' => $codigo,
