@@ -68,6 +68,7 @@ class BeneficiarioTutorController extends Controller
     $hoy = Carbon::today()->toDateString();
 
     $entregas = BeneficiarioTutor::where('tutor_id', $tutor_id)
+        ->whereHas('beneficiario')
         ->with([
             'beneficiario',
             'beneficiario.beneficiariosuscripciones' => function ($query) use ($hoy) {
