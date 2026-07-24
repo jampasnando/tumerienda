@@ -64,6 +64,7 @@ class AuthController extends Controller
     public function version(){
         $version = DB::table('configuracion')
             ->select('version')
+            ->where('estado',1)
             ->first();
         return json_encode($version);
     }
