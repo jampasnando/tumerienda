@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -48,7 +49,7 @@ class AuthController extends Controller
         ]);
 
         $tutor = Tutor::where('email', $request->email)->first();
-        
+
         if (! $tutor || ! Hash::check($request->password, $tutor->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
@@ -59,5 +60,11 @@ class AuthController extends Controller
             'token' => $token,
             'tutor' => $tutor,
         ]);
+    }
+    public function version(){
+        $version = DB::table('configuracion')
+            ->select('version')
+            ->first();
+        return json_encode($version);
     }
 }
