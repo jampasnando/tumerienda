@@ -96,11 +96,11 @@
                     <span>
                         {{ $dia->format('d') }}
                     </span>
-                    @if($menus->count())
+                    {{-- @if($menus->count())
                         <span class="text-xs text-gray-500">
                             {{ $menus->sum('cantidad') }}
                         </span>
-                    @endif
+                    @endif --}}
                 </div>
                 @forelse($menus as $item)
                             <div class="cal-item mb-1">
