@@ -64,20 +64,33 @@ class BeneficiarioTutorController extends Controller
         //
     }
     public function entregashoy($tutor_id)
-{
-    $hoy = Carbon::today()->toDateString();
+    {
+        $hoy = Carbon::today()->toDateString();
 
-    $entregas = BeneficiarioTutor::where('tutor_id', $tutor_id)
-        ->whereHas('beneficiario')
-        ->with([
-            'beneficiario',
-            'beneficiario.beneficiariosuscripciones' => function ($query) use ($hoy) {
-                $query->whereDate('fecha', $hoy)
-                    ->with('menu');
-            }
-        ])
-        ->get();
+        $entregas = BeneficiarioTutor::where('tutor_id', $tutor_id)
+            ->whereHas('beneficiario')
+            ->with([
+                'beneficiario',
+                'beneficiario.beneficiariosuscripciones' => function ($query) use ($hoy) {
+                    $query->whereDate('fecha', $hoy)
+                        ->with('menu');
+                }
+            ])
+            ->get();
 
-    return response()->json($entregas);
-}
+        return response()->json($entregas);
+    }
+    public function resumen($tutor_id)
+    {
+         $entregas = BeneficiarioTutor::where('tutor_id', $tutor_id)
+            ->whereHas('beneficiario')
+            ->with([
+                'beneficiario',
+                'beneficiario.beneficiariosuscripciones' => function ($query) {
+                    $query->with('menu');
+            ])
+            ->get();
+
+        return response()->json($entregas);
+    }
 }
