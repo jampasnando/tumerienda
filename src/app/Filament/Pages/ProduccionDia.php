@@ -11,6 +11,8 @@ class ProduccionDia extends Page
     protected string $view = 'filament.pages.produccion-dia';
     public $fecha;
     protected ?string $heading = null;
+    protected static bool $shouldRegisterNavigation = false;
+    
     public function mount()
     {
         $this->fecha=request('fecha');
