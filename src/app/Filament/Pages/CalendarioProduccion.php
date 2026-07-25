@@ -16,7 +16,6 @@ class CalendarioProduccion extends Page
     // protected string $view = 'filament.pages.calendario-beneficiario';
     // protected static  $navigationGroup = 'Operaciones';
 
-    public $beneficiario_id;
     public $mes;
     public $anio;
 
@@ -26,33 +25,34 @@ class CalendarioProduccion extends Page
         $this->anio = now()->year;
     }
 
-    public function getBeneficiario()
-    {
-        return Beneficiario::find($this->beneficiario_id);
-    }
+    // public function getBeneficiario()
+    // {
+    //     return Beneficiario::find($this->beneficiario_id);
+    // }
 
     public function getDias()
     {
-        $inicio = \Carbon\Carbon::create($this->anio, $this->mes, 1);
+        $inicio = Carbon::create($this->anio, $this->mes, 1);
         $fin = $inicio->copy()->endOfMonth();
 
         $dias = [];
 
-        // 🔥 Día de la semana (1=Lunes, 5=Viernes)
+        // 1=Lunes ... 7=Domingo
         $primerDiaSemana = $inicio->dayOfWeekIso;
 
-        // 👉 agregar espacios vacíos antes del día 1
+        // Espacios antes del día 1
         for ($i = 1; $i < $primerDiaSemana; $i++) {
             $dias[] = null;
         }
 
         while ($inicio->lte($fin)) {
-
-            if (!$inicio->isSunday()) {
-                $dias[] = $inicio->copy();
-            }
-
+            $dias[] = $inicio->copy();
             $inicio->addDay();
+        }
+
+        // Completar la última semana
+        while (count($dias) % 7 != 0) {
+            $dias[] = null;
         }
 
         return $dias;
