@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'ci' => 'required|unique:tutores,ci',
+            // 'ci' => 'required|unique:tutores,ci',
         ]);
 
         $tutor = Tutor::create([
