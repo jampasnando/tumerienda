@@ -11,10 +11,14 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        // dd($request->all());
         // $request->validate([
-        //     'ci' => 'required|unique:tutores,ci',
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:tutors',
+        //     'password' => 'required|min:6',
         // ]);
-
+        // dd($request->all());
+        // Log::info('Datos recibidos para registro: ', $request->all());
         $tutor = Tutor::create([
             'nombre' => $request->nombre,
             'email' => $request->email,
@@ -24,7 +28,7 @@ class AuthController extends Controller
             'telefono' => $request->telefono,
             'celular' => $request->celular,
             'genero' => $request->genero,
-            'comentarios' => $request->comentario,
+            'comentarios' => '',
         ]);
         // dd($tutor);
         $token = $tutor->createToken('app')->plainTextToken;
