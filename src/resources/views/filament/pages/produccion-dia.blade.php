@@ -1,4 +1,16 @@
 <x-filament-panels::page>
+    <style>
+        .nombre{
+            font-weight: bold;
+            size:1.2em;
+        }
+        .meriendas{
+            margin-left: 2em;
+        }
+        .paratiquear{
+            font-size: 2em;
+        }
+    </style>
     @foreach($this->getProduccion() as $colegio=>$beneficiarios)
 
     <x-filament::section>
@@ -18,7 +30,8 @@
 
             <div class="border-b py-2">
 
-                <div class="font-bold">
+                <div class="nombre">
+                    {{-- <input type="checkbox" class="paratiquear"> --}}
                     {{ $colegio?->codigo }}
                     -
                     {{ $benef->nombre }}
@@ -27,7 +40,7 @@
 
                 </div>
 
-                <ul>
+                <ul class="meriendas">
 
                 @foreach($items as $s)
 

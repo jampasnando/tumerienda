@@ -3,15 +3,18 @@
 namespace App\Filament\Pages;
 
 use App\Models\Suscripcion;
+use Carbon\Carbon;
 use Filament\Pages\Page;
 
 class ProduccionDia extends Page
 {
     protected string $view = 'filament.pages.produccion-dia';
     public $fecha;
+    protected ?string $heading = null;
     public function mount()
     {
         $this->fecha=request('fecha');
+        $this->heading = 'Entregas para el ' . Carbon::parse($this->fecha)->format('d/m/Y');
     }
     public function getProduccion()
     {
