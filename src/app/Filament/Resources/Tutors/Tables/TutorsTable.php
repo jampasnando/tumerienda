@@ -31,8 +31,13 @@ class TutorsTable
         return $table
             ->columns([
                 TextColumn::make('nombre')
-                    ->searchable(),
+                    ->sortable()
+                    ->searchable()
+                    ->getStateUsing(function($record){
+                        return $record->nombre +' ' +$record->apellidos;
+                    }),
                 TextColumn::make('ci')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('telefono')
                     ->searchable(),
@@ -62,6 +67,7 @@ class TutorsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('nombre')
             ->filters([
                 TrashedFilter::make(),
             ])
