@@ -11,9 +11,9 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            // 'ci' => 'required|unique:tutores,ci',
-        ]);
+        // $request->validate([
+        //     'ci' => 'required|unique:tutores,ci',
+        // ]);
 
         $tutor = Tutor::create([
             'nombre' => $request->nombre,
@@ -23,8 +23,8 @@ class AuthController extends Controller
             'direccion' => $request->direccion,
             'telefono' => $request->telefono,
             'celular' => $request->celular,
-            'genero' => '',
-            'comentarios' => '',
+            'genero' => $request->genero,
+            'comentarios' => $request->comentario,
         ]);
         // dd($tutor);
         $token = $tutor->createToken('app')->plainTextToken;
@@ -32,7 +32,7 @@ class AuthController extends Controller
         return response()->json([
             'tutor' => $tutor,
             'token' => $token
-        ],201);
+        ]);
     }
 
     public function login(Request $request)
