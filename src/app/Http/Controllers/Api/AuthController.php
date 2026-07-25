@@ -29,6 +29,7 @@ class AuthController extends Controller
             'celular' => $request->celular,
             'genero' => $request->genero,
             'comentarios' => '',
+            'apellidos' => $request->apellidos
         ]);
         // dd($tutor);
         $token = $tutor->createToken('app')->plainTextToken;
