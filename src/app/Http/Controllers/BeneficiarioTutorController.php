@@ -88,6 +88,7 @@ class BeneficiarioTutorController extends Controller
                 'beneficiario',
                 'beneficiario.beneficiariosuscripciones' => function ($query) {
                     $query->with('menu');
+                }
             ])
             ->get();
 
