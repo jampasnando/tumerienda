@@ -83,42 +83,47 @@
             {{-- Calendario --}}
         <div class="cal-grid">
             @foreach ($dias as $dia)
-            @if(!$dia)
-                <div class="cal-day bg-transparent border-none"></div>
-                @continue
-            @endif
-            @php
-                $fecha = $dia->format('Y-m-d');
-                $menus = $resumen[$fecha] ?? collect();
-            @endphp
-            <div class="cal-day">
-                <div class="cal-date flex justify-between">
-                    <span>
-                        {{ $dia->format('d') }}
-                    </span>
-                    {{-- @if($menus->count())
-                        <span class="text-xs text-gray-500">
-                            {{ $menus->sum('cantidad') }}
+                @if(!$dia)
+                    <div class="cal-day bg-transparent border-none"></div>
+                    @continue
+                @endif
+                @php
+                    $fecha = $dia->format('Y-m-d');
+                    $menus = $resumen[$fecha] ?? collect();
+                @endphp
+                <a
+                    href="{{ \App\Filament\Pages\ProduccionDia::getUrl([
+                        'fecha'=>$fecha
+                    ]) }}"
+                    class="cal-day block hover:bg-gray-50 transition"
+                >
+                    <div class="cal-date flex justify-between">
+                        <span>
+                            {{ $dia->format('d') }}
                         </span>
-                    @endif --}}
-                </div>
-                @forelse($menus as $item)
-                            <div class="cal-item mb-1">
-                                <div class="flex justify-between">
-                                    <span>
-                                        {{ $item->menu_nombre }}
-                                    </span>
-                                    <span class="font-bold">
-                                        {{ $item->cantidad }}
-                                    </span>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="cal-empty">
-                                Sin pedidos
-                            </div>
-                        @endforelse
+                        {{-- @if($menus->count())
+                            <span class="text-xs text-gray-500">
+                                {{ $menus->sum('cantidad') }}
+                            </span>
+                        @endif --}}
                     </div>
+                    @forelse($menus as $item)
+                                <div class="cal-item mb-1">
+                                    <div class="flex justify-between">
+                                        <span>
+                                            {{ $item->menu_nombre }}
+                                        </span>
+                                        <span class="font-bold">
+                                            {{ $item->cantidad }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="cal-empty">
+                                    Sin pedidos
+                                </div>
+                            @endforelse
+                </a>
             @endforeach
         </div>
     </div>
