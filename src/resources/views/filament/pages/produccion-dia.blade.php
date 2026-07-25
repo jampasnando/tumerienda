@@ -13,12 +13,14 @@
 
             @php
                 $benef=$items->first()->beneficiario;
+                $colegio = $benef->nombrecolegioActivo;
             @endphp
 
             <div class="border-b py-2">
 
                 <div class="font-bold">
-
+                    {{ $colegio?->codigo }}
+                    -
                     {{ $benef->nombre }}
 
                     {{ $benef->apellidos }}
