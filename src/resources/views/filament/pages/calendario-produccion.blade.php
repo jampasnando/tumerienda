@@ -96,6 +96,7 @@
                         'fecha'=>$fecha
                     ]) }}"
                     class="cal-day block hover:bg-gray-50 transition"
+                    target="_blank"
                 >
                     <div class="cal-date flex justify-between">
                         <span>
