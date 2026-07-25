@@ -34,7 +34,7 @@ class TutorsTable
                     ->sortable()
                     ->searchable()
                     ->getStateUsing(function($record){
-                        return $record->nombre +' ' +$record->apellidos;
+                        return $record->nombre .' '.$record->apellidos;
                     }),
                 TextColumn::make('ci')
                     ->sortable()
