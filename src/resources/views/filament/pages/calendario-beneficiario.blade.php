@@ -103,9 +103,10 @@
                     $menus = $resumen[$fecha] ?? collect();
                 @endphp
                 <a
-                    href="{{ \App\Filament\Pages\ProduccionDia::getUrl([
+                    {{-- href="{{ \App\Filament\Pages\ProduccionDia::getUrl([
                         'fecha'=>$fecha
-                    ]) }}"
+                    ]) }}" --}}
+                    href="#"
                     class="cal-day block hover:bg-gray-50 transition"
                     target="_blank"
                 >
