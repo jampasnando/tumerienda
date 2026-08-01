@@ -155,7 +155,13 @@ class BeneficiarioController extends Controller
             ])
 
             ->orderBy('fecha')
-            ->get();
+            ->get()
+            ->each(function ($oferta) {
+                $oferta->setRelation(
+                    'suscripciones',
+                    $oferta->suscripciones->where('fecha', $oferta->fecha)->values()
+                );
+            });
         Log::info("ofertasWithSuscripciones",["ofertasconsusc"=>$ofertas]);
         $ofertassucritas = Oferta::where('activo', 1)
             ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
