@@ -163,7 +163,7 @@ class BeneficiarioController extends Controller
             }])
             ->get();
 
-        Log::info("suscripcioens",["ofertasconsusc"=>$ofertas]);
+        Log::info("suscripcioens",["ofertasconsusc"=>$ofertassucritas]);
         $resultado = $ofertas->map(function ($oferta) {
 
             $suscripcion = $oferta->suscripciones->first();
