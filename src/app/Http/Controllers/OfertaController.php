@@ -175,7 +175,8 @@ class OfertaController extends Controller
             ->pluck('menu_id')
             ->toArray();
 
-        // Agrupar preservando el orden real de los grupos
+        Log::info("suscripciones en ofertaFecha laravel", ["suscripciones" => $suscripciones]);
+            // Agrupar preservando el orden real de los grupos
         $gruposPorNombre = [];
 
         foreach ($menusOferta as $menu) {
