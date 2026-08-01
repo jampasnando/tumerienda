@@ -163,13 +163,13 @@ class BeneficiarioController extends Controller
                 );
             });
         Log::info("ofertasWithSuscripciones",["ofertasconsusc"=>$ofertas]);
-        $ofertassucritas = Oferta::where('activo', 1)
-            ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
-                $q->where('beneficiario_id', $beneficiarioId);
-            }])
-            ->get();
+        // $ofertassucritas = Oferta::where('activo', 1)
+        //     ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
+        //         $q->where('beneficiario_id', $beneficiarioId);
+        //     }])
+        //     ->get();
 
-        Log::info("suscripcioens",["ofertasconsusc"=>$ofertassucritas]);
+        // Log::info("suscripcioens",["ofertasconsusc"=>$ofertassucritas]);
         $resultado = $ofertas->map(function ($oferta) {
 
             $suscripcion = $oferta->suscripciones->first();
@@ -229,7 +229,8 @@ class BeneficiarioController extends Controller
             'total_suscripciones_ofertas' => $totalSuscripcionesOfertas,
             'total_suscripciones_fechas' => $totalSuscripcionesFechas,
             'items' => $resultado,
-            'ofertassuscritas' => $ofertassucritas
+            // 'ofertassuscritas' => $ofertassucritas
+            'ofertassuscritas' => $ofertas
         ]);
     }
     public function beneficiarioPlanes($beneficiarioId)
