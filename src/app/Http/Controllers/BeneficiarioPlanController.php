@@ -51,13 +51,26 @@ class BeneficiarioPlanController extends Controller
             // Log::info('Antes de crear beneficiarioPlan, nombreTutor,correoTutor,plan',["nombreTutor"=>$nombreTutor,"correoTutor"=>$correoTutor,"plan"=>$plan]);
             // return response()->json($responde);
             // BeneficiarioPlan::create($request->all());
+            // BeneficiarioPlan::firstOrCreate(
+            //     [
+            //         'beneficiario_id' => $request->beneficiario_id,
+            //         'plan_id' => $request->plan_id,
+            //         'detalle' => $request->detalle
+            //     ],
+            //     $request->all()
+            // );
+            $detalle = json_decode($request->detalle, true);
+
+            $alias = $detalle['objeto']['alias'] ?? null;
+
             BeneficiarioPlan::firstOrCreate(
+                ['alias' => $alias],
                 [
                     'beneficiario_id' => $request->beneficiario_id,
                     'plan_id' => $request->plan_id,
-                    'detalle' => $request->detalle
-                ],
-                $request->all()
+                    'detalle' => $request->detalle,
+                    'alias' => $alias,
+                ]
             );
             try {
 

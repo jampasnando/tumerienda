@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BeneficiarioPlan;
 use App\Models\Cobrosqr;
 use App\Models\Detalleventa;
 use App\Models\Inventario;
@@ -46,18 +47,50 @@ class BisaController extends Controller
                 $data=["codigo"=>"9999","mensaje"=>"No se pudo procesar"];
                 return response(json_encode($data),200)->header('Content-Type','application/json');
             }
-            $nuevo=Cobrosqr::create([
-            "alias"=>$request->alias,
-            "numeroOrdenOriginante"=>$request->numeroOrdenOriginante,
-            "monto"=>$request->monto,
-            "idQr"=>$request->idQr,
-            "moneda"=>$request->moneda,
-            "fechaproceso"=>$request->fechaproceso,
-            "cuentaCliente"=>$request->cuentaCliente,
-            "nombreCliente"=>$request->nombreCliente,
-            "documentoCliente"=>$request->documentoCliente,
-            "fechareg"=>date("Y-m-d H:i:s")
-            ]);
+            // $nuevo=Cobrosqr::create([
+            // "alias"=>$request->alias,
+            // "numeroOrdenOriginante"=>$request->numeroOrdenOriginante,
+            // "monto"=>$request->monto,
+            // "idQr"=>$request->idQr,
+            // "moneda"=>$request->moneda,
+            // "fechaproceso"=>$request->fechaproceso,
+            // "cuentaCliente"=>$request->cuentaCliente,
+            // "nombreCliente"=>$request->nombreCliente,
+            // "documentoCliente"=>$request->documentoCliente,
+            // "fechareg"=>date("Y-m-d H:i:s")
+            // ]);
+            $nuevo=Cobrosqr::firstOrCreate(
+                ['alias' => $request->alias],
+                [
+                    'numeroOrdenOriginante' => $request->numeroOrdenOriginante,
+                    'monto' => $request->monto,
+                    'idQr' => $request->idQr,
+                    'moneda' => $request->moneda,
+                    'fechaproceso' => $request->fechaproceso,
+                    'cuentaCliente' => $request->cuentaCliente,
+                    'nombreCliente' => $request->nombreCliente,
+                    'documentoCliente' => $request->documentoCliente,
+                    'fechareg' => now(),
+                ]
+            );
+            if (preg_match('/^Susc(\d+)_Benef(\d+)_/', $request->alias, $matches)) {
+
+                $planId = $matches[1];
+                $beneficiarioId = $matches[2];
+                BeneficiarioPlan::firstOrCreate(
+                    [
+                        'alias' => $request->alias,
+                    ],
+                    [
+                        'beneficiario_id' => $beneficiarioId,
+                        'plan_id' => $planId,
+                        'alias' => $request->alias,
+                        'detalle' => json_encode($request->all()),
+                    ]
+                );
+
+            }
+
             $data=["codigo"=>"0000","mensaje"=>"Registro exitoso"];
         }
         else{
@@ -181,92 +214,6 @@ class BisaController extends Controller
         $respuesta = ["codigo" => "0000", "mensaje" => "Registro Exitoso"];
         return response()->json($respuesta);
     }
-
-    public function registraventaqr($deposito, $carrito, $existepago, $enc_caja, $idventa, $hoyxareg, $vendedor)
-    {
-        if ($vendedor == null || $vendedor["id"] == null || $vendedor["id"] == 0) {
-            $elquevende = $enc_caja[0]["id"];
-        } else {
-            $elquevende = $vendedor["id"];
-        }
-        $venta = ["idneg" => $deposito, "idventa" => $idventa, "total" => $existepago[0]["monto"], "cliente" => $existepago[0]["nombreCliente"], "telefono" => "", "nit" => $existepago[0]["documentoCliente"], "formapago" => "QR", "fecha" => $hoyxareg, "comentario" => "VENTA QR TIENDAONLINE", "vendedor" => $elquevende, "idusr" => $enc_caja[0]["id"], "idcliente" => "0", "pago" => $existepago[0]["monto"], "saldo" => "0", "pagomixto" => null];
-        Venta::create($venta);
-        foreach ($carrito as $key => $unprod) {
-            $detalle = ["idventa" => $idventa, "idprod" => $unprod["idprod"], "preciolocal" => $unprod["preciolocal"], "precioventa" => $unprod["precioventa"], "preciofinal" => $unprod["preciofinal"], "cuantos" => $unprod["cuantos"], "descripcion" => $unprod["descripcion"], "vendedor" => $elquevende, "comision" => $unprod["comision"], "pagocomision" => null, "observaciones" => null, "cierre" => null];
-            Detalleventa::insert($detalle);
-            $updateprod = Inventario::findOrFail($unprod["id"]);
-            $updateprod->cantidad = $updateprod->cantidad - $unprod["cuantos"];
-            //$updateprod->save();
-        }
-    }
-
-    public function pdfgarantia($carrito, $existepago, $enc_caja, $idventa, $hoy)
-    {
-        $pdforiginal = public_path("garantia2.pdf");
-        $nuevagarantia = public_path("garantias/" . $hoy . ".pdf");
-        $nombrearch = $hoy . ".pdf";
-        $comprador = substr($existepago[0]["nombreCliente"], 0, 27);
-        $telfcomprador = "";
-        $vendedor = $enc_caja[0]["nombre"];
-        $codcompra = $idventa;
-        $fechacompra = date("d-m-Y");
-
-        $pdf = new Fpdi();
-        // $pdf = new \setasign\Fpdi\Fpdi();
-        $pdf->AddPage();
-        $pdf->SetFont("Helvetica");
-        $pdf->setSourceFile($pdforiginal);
-        $abrepagina1 = $pdf->importPage(1);
-        $pdf->useTemplate($abrepagina1);
-
-        $pdf->SetXY(75, 48);
-        $pdf->Write(10, $vendedor);
-        $pdf->SetXY(57, 57);
-        $pdf->Write(10, $idventa);
-        $pdf->SetXY(135, 57);
-        $pdf->Write(10, $fechacompra);
-        $pdf->SetXY(70, 65);
-        $pdf->Write(10, $comprador);
-        $pdf->SetXY(150, 65);
-        $pdf->Write(10, $telfcomprador);
-
-        $pdf->AddPage();
-        $abrepagina2 = $pdf->importPage(2);
-        $pdf->useTemplate($abrepagina2);
-        $pdf->SetXY(0, 0);
-        $pdf->Write(10, '');
-
-        $pdf->SetFillColor(255, 215, 0);
-        $pdf->SetFontSize(10);
-        $pdf->SetXY(30, 50);
-        $pdf->Cell(10, 5, "#", 1, 0, 'C', true, '');
-        $pdf->SetXY(40, 50);
-        $pdf->Cell(25, 5, "COD", 1, 0, 'C', true, '');
-        $pdf->SetXY(65, 50);
-        $pdf->Cell(125, 5, "Producto", 1, 0, 'C', true, '');
-
-        $nroitems = count($carrito);
-        $posy = 55;
-        for ($k = 0; $k < $nroitems; $k++) {
-            $pdf->SetXY(30, $posy);
-            $pdf->Cell(10, 5, $carrito[$k]["cuantos"], 1, 0, 'C', false, '');
-            $pdf->SetXY(40, $posy);
-            $pdf->Cell(25, 5, $carrito[$k]["idprod"], 1, 0, 'C', false, '');
-            $pdf->SetXY(65, $posy);
-            $pdf->Cell(125, 5, $carrito[$k]["descripcion"], 1, 0, 'L', false, '');
-
-            $posy += 5;
-        }
-
-        $pdf->SetXY(30, $posy);
-        $pdf->Write(10, "Gracias por su compra.");
-        $pdf->SetXY(30, $posy + 10);
-        $pdf->Write(10, "Para consultas comuniquese con el Whatsapp 77939732");
-        // $pdf->Text(100,50,$comprador);
-        $pdf->Output($nuevagarantia, 'F');
-        return response()->json(['message' => 'PDF generado correctamente', 'filename' => $nombrearch]);
-    }
-
     public function saludo(Request $request){
         return response()->json("misaludo desde api");
     }
