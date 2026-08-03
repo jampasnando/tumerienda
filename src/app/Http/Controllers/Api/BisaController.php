@@ -14,6 +14,7 @@ use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use setasign\Fpdi\Fpdi;
 
@@ -86,8 +87,45 @@ class BisaController extends Controller
                         'plan_id' => $planId,
                         'alias' => $request->alias,
                         'detalle' => json_encode($request->all()),
+                        'estado' => true,
+                        'nrorecibidos' => 0,
                     ]
                 );
+                try {
+                    $beneficiario = \App\Models\Beneficiario::with('tutorActivo.tutor','plan')
+                        ->where('id', $beneficiarioId)
+                        ->firstOrFail();
+                    $plan = $beneficiario->beneficiarioPlans()
+                        ->where('plan_id', $planId)
+                        ->firstOrFail()
+                        ->plan
+                        ->nombre;
+                    // $nombreTutor = $beneficiario->tutorActivo?->tutor?->nombre;
+                    $correoTutor = $beneficiario->tutorActivo?->tutor?->email;
+                    Mail::raw(
+                            'Gracias por su Suscripción al plan: '.$plan.
+                            ' para '.$beneficiario->nombre.
+                            '. En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.'.
+                            'Registro: '.$request->alias,
+                            function ($message) use ($beneficiario, $correoTutor) {
+                                $message->to($correoTutor)
+                                        ->subject('Suscripción recibida para '.$beneficiario->nombre);
+                            }
+                        );
+
+                        return response()->json([
+                            'ok' => true,
+                            'mensaje' => 'Correo enviado correctamente.'
+                        ]);
+
+                    } catch (\Exception $e) {
+
+                        return response()->json([
+                            'ok' => false,
+                            'error' => $e->getMessage()
+                        ],500);
+
+                    }
 
             }
 

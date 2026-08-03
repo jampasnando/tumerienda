@@ -77,7 +77,8 @@ class BeneficiarioPlanController extends Controller
                Mail::raw(
                     'Gracias por su Suscripción al plan: '.$plan.
                     ' para '.$beneficiario->nombre.
-                    '. En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.',
+                    '. En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.'.
+                    'Registro: '.$alias,
                     function ($message) use ($beneficiario, $correoTutor) {
                         $message->to($correoTutor)
                                 ->subject('Suscripción recibida para '.$beneficiario->nombre);
