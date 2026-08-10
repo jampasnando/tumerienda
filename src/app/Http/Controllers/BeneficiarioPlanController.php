@@ -70,6 +70,8 @@ class BeneficiarioPlanController extends Controller
                     'plan_id' => $request->plan_id,
                     'detalle' => $request->detalle,
                     'alias' => $alias,
+                    'estado' => true,
+                    'nrorecibidos' => 0
                 ]
             );
             try {
