@@ -23,6 +23,8 @@ class AuthController extends Controller
             'celular' => 'nullable|string|max:50',
             'genero' => 'nullable|string|max:20',
             'apellidos' => 'nullable|string|max:255',
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
         try {
