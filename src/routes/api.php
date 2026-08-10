@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'olvidePassword']);
+Route::post('/reset-password', [AuthController::class, 'resetearPassword']);
 Route::middleware('auth:sanctum')->get('/mis-beneficiarios', function (Request $request) {
 
     $tutorId = $request->tutor_id;
