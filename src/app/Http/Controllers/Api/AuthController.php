@@ -73,6 +73,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
+        ],
+        [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico debe ser una dirección válida.',
         ]);
 
         $email = $request->email;
