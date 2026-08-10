@@ -36,5 +36,5 @@ Route::get('/mail-test', function () {
 
 });
 Route::get('/reset-password', function () {
-    return view('reset_password');
+    return view('emails.reset_password');
 });
