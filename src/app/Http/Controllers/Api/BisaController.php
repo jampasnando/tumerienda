@@ -139,93 +139,413 @@ class BisaController extends Controller
 
     public function obtieneqr(Request $request)
     {
-        // return json_encode($request->all());
+        // Obtener configuración
         $configuracion = $this->getConfiguracion();
+
         Log::info("Configuracion obtenida: " . json_encode($configuracion));
+
         if (!$configuracion) {
-            return response()->json(['error' => 'Configuración no encontrada'], 404);
+            return response()->json([
+                'error' => 'Configuración no encontrada'
+            ], 404);
         }
+
         $urlqr = $configuracion->urlqr;
         $apikeyServicio = $configuracion->apikeyServicio;
         $callback = $configuracion->callback;
+
         $glosa = $request->input("glosa");
         $monto = $request->input("monto");
         $alias = $request->input("alias");
-        
-        $eltoken = "";
-        $eltoken = $this->obtienetokenbisa();
-        Log::info("Token obtenido: " . $eltoken);
-        if ($eltoken == '' || $eltoken == null) {
-            return response()->json(['error' => 'Token de Bisa no disponible'], 404);
-        } else {
-            // return $eltoken;
-            $hoy = date("Y-m-d");
-            $vencimiento = date('d/m/Y', strtotime('+1 day', strtotime($hoy)));
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $urlqr);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"alias\": \"$alias\",\"callback\": \"$callback\",\"detalleGlosa\": \"$glosa\",\"monto\": $monto,\"moneda\": \"BOB\",\"fechaVencimiento\": \"$vencimiento\",\"tipoSolicitud\": \"API\",\"unicoUso\": \"true\"}");
+        /*
+        * ============================================================
+        * OBTENER TOKEN DE BISA
+        * ============================================================
+        *
+        * Intentamos hasta 3 veces.
+        */
+        $eltoken = null;
 
+        for ($intento = 1; $intento <= 3; $intento++) {
 
-            $headers = array();
-            $headers[] = 'Apikeyservicio: ' . $apikeyServicio;
-            $headers[] = 'Authorization: Bearer ' . $eltoken;
-            $headers[] = 'Content-Type: application/json';
-            // return json_encode($headers);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $response = curl_exec($ch);
+            Log::info("Intentando obtener token de Bisa. Intento: {$intento}");
+
+            $eltoken = $this->obtienetokenbisa();
+
+            Log::info(
+                "Resultado intento {$intento}: " .
+                (!empty($eltoken) ? 'TOKEN OBTENIDO' : 'TOKEN VACÍO')
+            );
+
+            if (!empty($eltoken)) {
+                break;
+            }
+
+            // Esperar 500 milisegundos antes del siguiente intento
+            if ($intento < 3) {
+                usleep(500000);
+            }
+        }
+
+        /*
+        * Si después de los 3 intentos no tenemos token,
+        * devolvemos error al cliente.
+        */
+        if (empty($eltoken)) {
+
+            Log::error(
+                "No se pudo obtener el token de Bisa después de 3 intentos"
+            );
+
+            return response()->json([
+                'error' => 'Token de Bisa no disponible'
+            ], 503);
+        }
+
+        Log::info("Token de Bisa obtenido correctamente");
+
+        /*
+        * ============================================================
+        * FECHA DE VENCIMIENTO
+        * ============================================================
+        */
+        $hoy = date("Y-m-d");
+
+        $vencimiento = date(
+            'd/m/Y',
+            strtotime('+1 day', strtotime($hoy))
+        );
+
+        /*
+        * ============================================================
+        * PREPARAR DATOS DEL QR
+        * ============================================================
+        */
+        $datosQr = [
+            'alias' => $alias,
+            'callback' => $callback,
+            'detalleGlosa' => $glosa,
+            'monto' => $monto,
+            'moneda' => 'BOB',
+            'fechaVencimiento' => $vencimiento,
+            'tipoSolicitud' => 'API',
+            'unicoUso' => true,
+        ];
+
+        $jsonQr = json_encode($datosQr);
+
+        /*
+        * ============================================================
+        * SOLICITAR QR A BISA
+        * ============================================================
+        */
+        $ch = curl_init();
+
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $urlqr,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+
+            // Tiempo máximo para establecer conexión
+            CURLOPT_CONNECTTIMEOUT => 10,
+
+            // Tiempo máximo total de la petición
+            CURLOPT_TIMEOUT => 30,
+
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $jsonQr,
+
+            CURLOPT_HTTPHEADER => [
+                'Apikeyservicio: ' . $apikeyServicio,
+                'Authorization: Bearer ' . $eltoken,
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+
+        /*
+        * ============================================================
+        * CONTROL DE ERRORES CURL
+        * ============================================================
+        */
+        if ($response === false) {
+
+            $curlError = curl_error($ch);
+            $curlErrno = curl_errno($ch);
+
+            Log::error("Error cURL al solicitar QR de Bisa", [
+                'errno' => $curlErrno,
+                'error' => $curlError,
+            ]);
+
             curl_close($ch);
 
-            $dataqr = json_decode($response);
-
-            Log::info("Respuesta QR: " . json_encode($dataqr));
-            return response()->json(["imagenqr" => $dataqr->objeto->imagenQr, "idQr" => $dataqr->objeto->idQr, "alias"=>$alias]);
+            return response()->json([
+                'error' => 'Error de comunicación con el servicio de Bisa',
+                'detalle' => $curlError,
+            ], 503);
         }
+
+        /*
+        * Obtener código HTTP antes de cerrar cURL
+        */
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        Log::info("Código HTTP respuesta QR Bisa: {$httpCode}");
+        Log::info("Respuesta cruda QR Bisa: " . $response);
+
+        /*
+        * ============================================================
+        * VALIDAR RESPUESTA
+        * ============================================================
+        */
+        if (empty($response)) {
+
+            Log::error(
+                "Bisa devolvió una respuesta vacía al solicitar el QR"
+            );
+
+            return response()->json([
+                'error' => 'Bisa devolvió una respuesta vacía'
+            ], 503);
+        }
+
+        /*
+        * ============================================================
+        * DECODIFICAR JSON
+        * ============================================================
+        */
+        $dataqr = json_decode($response);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+
+            Log::error("Respuesta de QR no es JSON válido", [
+                'respuesta' => $response,
+                'error_json' => json_last_error_msg(),
+            ]);
+
+            return response()->json([
+                'error' => 'Respuesta inválida del servicio de Bisa'
+            ], 502);
+        }
+
+        Log::info("Respuesta QR decodificada: " . json_encode($dataqr));
+
+        /*
+        * ============================================================
+        * VALIDAR ESTRUCTURA DE RESPUESTA
+        * ============================================================
+        */
+        if (
+            !isset($dataqr->objeto) ||
+            !isset($dataqr->objeto->imagenQr) ||
+            !isset($dataqr->objeto->idQr)
+        ) {
+
+            Log::error("Respuesta de Bisa no contiene los datos esperados", [
+                'respuesta' => $dataqr,
+            ]);
+
+            return response()->json([
+                'error' => 'Bisa no devolvió los datos esperados del QR',
+                'respuesta' => $dataqr,
+            ], 502);
+        }
+
+        /*
+        * ============================================================
+        * DEVOLVER QR
+        * ============================================================
+        */
+        return response()->json([
+            'imagenqr' => $dataqr->objeto->imagenQr,
+            'idQr' => $dataqr->objeto->idQr,
+            'alias' => $alias,
+        ]);
     }
+
+
     public function obtienetokenbisa()
     {
+        /*
+        * ============================================================
+        * OBTENER CONFIGURACIÓN
+        * ============================================================
+        */
         $config = $this->getConfiguracion();
-        Log::info("Configuracion obtenida para obtienetokenbisa(): " . json_encode($config));
+
+        Log::info(
+            "Configuracion obtenida para obtienetokenbisa(): " .
+            json_encode($config)
+        );
+
+        if (!$config) {
+
+            Log::error(
+                "No se encontró configuración para obtener token de Bisa"
+            );
+
+            return '';
+        }
+
         $username = $config->username;
         $password = $config->password;
         $apikey = $config->apikey;
         $urltoken = $config->urltoken;
-            $curl = curl_init();
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $urltoken,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => '{
-                "password":"'.$password.'",
-                "username":"'.$username.'"
-            }',
-                CURLOPT_HTTPHEADER => array(
-                    'apikey: '.$apikey.'',
-                    'Content-Type: application/json'
-                ),
-            ));
+        /*
+        * ============================================================
+        * PREPARAR REQUEST
+        * ============================================================
+        */
+        $datosLogin = [
+            'password' => $password,
+            'username' => $username,
+        ];
 
-            $response = curl_exec($curl);
+        $jsonLogin = json_encode($datosLogin);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $urltoken,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+
+            // Tiempo máximo para establecer conexión
+            CURLOPT_CONNECTTIMEOUT => 10,
+
+            // Tiempo máximo total
+            CURLOPT_TIMEOUT => 30,
+
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+
+            CURLOPT_CUSTOMREQUEST => 'POST',
+
+            CURLOPT_POSTFIELDS => $jsonLogin,
+
+            CURLOPT_HTTPHEADER => [
+                'apikey: ' . $apikey,
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        /*
+        * ============================================================
+        * EJECUTAR REQUEST
+        * ============================================================
+        */
+        $response = curl_exec($curl);
+
+        /*
+        * ============================================================
+        * CONTROL DE ERROR CURL
+        * ============================================================
+        */
+        if ($response === false) {
+
+            $curlError = curl_error($curl);
+            $curlErrno = curl_errno($curl);
+
+            Log::error("Error cURL al obtener token de Bisa", [
+                'errno' => $curlErrno,
+                'error' => $curlError,
+            ]);
 
             curl_close($curl);
-            if((!$response) || ($response == '')){
-                Log::error("Error al obtener token de Bisa: Respuesta vacía");
-                return '';
-            }
-            $data = json_decode($response);
-            Log::info("Respuesta de obtienetoken bisa " . json_encode($data));
 
-            $token = $data->objeto->token;
-            return $token;
+            return '';
+        }
 
+        /*
+        * Obtener código HTTP
+        */
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        curl_close($curl);
+
+        /*
+        * ============================================================
+        * REGISTRAR RESPUESTA
+        * ============================================================
+        */
+        Log::info(
+            "Código HTTP respuesta token Bisa: {$httpCode}"
+        );
+
+        Log::info(
+            "Respuesta cruda de obtienetoken Bisa: " . $response
+        );
+
+        /*
+        * ============================================================
+        * VALIDAR RESPUESTA VACÍA
+        * ============================================================
+        */
+        if (empty($response)) {
+
+            Log::error(
+                "Error al obtener token de Bisa: Respuesta vacía"
+            );
+
+            return '';
+        }
+
+        /*
+        * ============================================================
+        * DECODIFICAR JSON
+        * ============================================================
+        */
+        $data = json_decode($response);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+
+            Log::error("Respuesta de token de Bisa no es JSON válido", [
+                'respuesta' => $response,
+                'error_json' => json_last_error_msg(),
+            ]);
+
+            return '';
+        }
+
+        Log::info(
+            "Respuesta decodificada de obtienetoken Bisa: " .
+            json_encode($data)
+        );
+
+        /*
+        * ============================================================
+        * VALIDAR TOKEN
+        * ============================================================
+        */
+        if (!isset($data->objeto) || !isset($data->objeto->token)) {
+
+            Log::error(
+                "Bisa no devolvió el token esperado",
+                [
+                    'respuesta' => $data,
+                    'http_code' => $httpCode,
+                ]
+            );
+
+            return '';
+        }
+
+        $token = $data->objeto->token;
+
+        Log::info("Token de Bisa obtenido correctamente");
+
+        return $token;
     }
 
     public function verificapagoqr(Request $request)
