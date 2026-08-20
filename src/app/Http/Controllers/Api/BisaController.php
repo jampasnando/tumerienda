@@ -151,6 +151,7 @@ class BisaController extends Controller
         $glosa = $request->input("glosa");
         $monto = $request->input("monto");
         $alias = $request->input("alias");
+        
         $eltoken = "";
         $eltoken = $this->obtienetokenbisa();
         Log::info("Token obtenido: " . $eltoken);
