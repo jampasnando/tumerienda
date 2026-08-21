@@ -173,18 +173,12 @@ class BisaController extends Controller
 
             $eltoken = $this->obtienetokenbisa();
 
-            Log::info(
-                "Resultado intento {$intento}: " .
-                (!empty($eltoken) ? 'TOKEN OBTENIDO' : 'TOKEN VACÍO')
-            );
-
             if (!empty($eltoken)) {
                 break;
             }
 
-            // Esperar 500 milisegundos antes del siguiente intento
             if ($intento < 3) {
-                usleep(500000);
+                sleep(1);
             }
         }
 
@@ -422,10 +416,10 @@ class BisaController extends Controller
             CURLOPT_MAXREDIRS => 10,
 
             // Tiempo máximo para establecer conexión
-            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_CONNECTTIMEOUT => 4,
 
             // Tiempo máximo total
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 4,
 
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
