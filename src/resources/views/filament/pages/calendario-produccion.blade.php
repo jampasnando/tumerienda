@@ -80,51 +80,66 @@
             <div>Sáb</div>
             <div>Dom</div>
         </div>
+        <div
+            wire:key="calendario-{{ $this->anio }}-{{ $this->mes }}"
+            class="cal-grid"
+        >
             {{-- Calendario --}}
         <div class="cal-grid">
-            @foreach ($dias as $dia)
+            @foreach ($dias as $index => $dia)
+
                 @if(!$dia)
-                    <div class="cal-day bg-transparent border-none"></div>
+                    <div
+                        wire:key="vacio-{{ $this->anio }}-{{ $this->mes }}-{{ $index }}"
+                        class="cal-day bg-transparent border-none"
+                    ></div>
                     @continue
                 @endif
+
                 @php
                     $fecha = $dia->format('Y-m-d');
                     $menus = $resumen[$fecha] ?? collect();
                 @endphp
+
                 <a
+                    wire:key="dia-{{ $fecha }}"
                     href="{{ \App\Filament\Pages\ProduccionDia::getUrl([
-                        'fecha'=>$fecha
+                        'fecha' => $fecha
                     ]) }}"
                     class="cal-day block hover:bg-gray-50 transition"
                     target="_blank"
                 >
+
                     <div class="cal-date flex justify-between">
                         <span>
                             {{ $dia->format('d') }}
                         </span>
-                        {{-- @if($menus->count())
-                            <span class="text-xs text-gray-500">
-                                {{ $menus->sum('cantidad') }}
-                            </span>
-                        @endif --}}
                     </div>
+
                     @forelse($menus as $item)
-                                <div class="cal-item mb-1">
-                                    <div class="flex justify-between">
-                                        <span>
-                                            {{ $item->menu_nombre }}
-                                        </span>
-                                        <span class="font-bold">
-                                            {{ $item->cantidad }}
-                                        </span>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="cal-empty">
-                                    Sin pedidos
-                                </div>
-                            @endforelse
+
+                        <div class="cal-item mb-1">
+                            <div class="flex justify-between">
+                                <span>
+                                    {{ $item->menu_nombre }}
+                                </span>
+
+                                <span class="font-bold">
+                                    {{ $item->cantidad }}
+                                </span>
+                            </div>
+                        </div>
+
+                    @empty
+
+                        <div class="cal-empty">
+                            Sin pedidos
+                        </div>
+
+                    @endforelse
+
                 </a>
+
             @endforeach
         </div>
     </div>
