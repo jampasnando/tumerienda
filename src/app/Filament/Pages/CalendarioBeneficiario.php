@@ -192,7 +192,6 @@ class CalendarioBeneficiario extends Page
         $date = Carbon::create($this->anio, $this->mes)->subMonth();
         $this->mes = $date->month;
         $this->anio = $date->year;
-        $this->emit('$refresh');
     }
 
     public function nextMes()
@@ -200,6 +199,6 @@ class CalendarioBeneficiario extends Page
         $date = Carbon::create($this->anio, $this->mes)->addMonth();
         $this->mes = $date->month;
         $this->anio = $date->year;
-        $this->emit('$refresh');
+        // $this->emit('$refresh');
     }
 }
