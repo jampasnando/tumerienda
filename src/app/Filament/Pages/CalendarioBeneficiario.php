@@ -82,21 +82,19 @@ class CalendarioBeneficiario extends Page
 
                             return BeneficiarioColegio::query()
 
-                                ->where('activo',1)
+                                ->where('activo', 1)
 
                                 ->with('beneficiario')
 
                                 ->where(function ($query) use ($search) {
 
-                                    $query->where('codigo','like',"%{$search}%")
+                                    $query->where('codigo', 'like', "%{$search}%")
 
-                                        ->orWhereHas('beneficiario',function($q) use($search){
+                                        ->orWhereHas('beneficiario', function ($q) use ($search) {
 
-                                            $q->where('nombre','like',"%{$search}%")
-                                            ->orWhere('apellidos','like',"%{$search}%");
-
+                                            $q->where('nombre', 'like', "%{$search}%")
+                                                ->orWhere('apellidos', 'like', "%{$search}%");
                                         });
-
                                 })
 
                                 ->limit(50)
@@ -109,26 +107,24 @@ class CalendarioBeneficiario extends Page
 
                                         $item->beneficiario_id =>
 
-                                            $item->codigo
-                                            .' - '
-                                            .$item->beneficiario->nombre
-                                            .' '
-                                            .$item->beneficiario->apellidos
+                                        $item->codigo
+                                            . ' - '
+                                            . $item->beneficiario->nombre
+                                            . ' '
+                                            . $item->beneficiario->apellidos
 
                                     ];
-
                                 })
 
                                 ->toArray();
-
                         })
 
                         ->getOptionLabelUsing(function ($value) {
 
                             $item = BeneficiarioColegio::with('beneficiario')
 
-                                ->where('beneficiario_id',$value)
-                                ->where('activo',1)
+                                ->where('beneficiario_id', $value)
+                                ->where('activo', 1)
                                 ->first();
 
                             if (!$item) {
@@ -136,11 +132,10 @@ class CalendarioBeneficiario extends Page
                             }
 
                             return $item->codigo
-                                .' - '
-                                .$item->beneficiario->nombre
-                                .' '
-                                .$item->beneficiario->apellidos;
-
+                                . ' - '
+                                . $item->beneficiario->nombre
+                                . ' '
+                                . $item->beneficiario->apellidos;
                         })
 
                         ->default($this->beneficiario_id)
@@ -152,17 +147,16 @@ class CalendarioBeneficiario extends Page
                     $this->beneficiario_id = $data['beneficiario_id'];
 
                     $item = BeneficiarioColegio::with('beneficiario')
-                        ->where('beneficiario_id',$this->beneficiario_id)
-                        ->where('activo',1)
+                        ->where('beneficiario_id', $this->beneficiario_id)
+                        ->where('activo', 1)
                         ->first();
 
                     $this->beneficiarioNombre =
                         $item->codigo
-                        .' - '
-                        .$item->beneficiario->nombre
-                        .' '
-                        .$item->beneficiario->apellidos;
-
+                        . ' - '
+                        . $item->beneficiario->nombre
+                        . ' '
+                        . $item->beneficiario->apellidos;
                 })
 
         ];
@@ -198,6 +192,7 @@ class CalendarioBeneficiario extends Page
         $date = Carbon::create($this->anio, $this->mes)->subMonth();
         $this->mes = $date->month;
         $this->anio = $date->year;
+        $this->emit('$refresh');
     }
 
     public function nextMes()
@@ -205,5 +200,6 @@ class CalendarioBeneficiario extends Page
         $date = Carbon::create($this->anio, $this->mes)->addMonth();
         $this->mes = $date->month;
         $this->anio = $date->year;
+        $this->emit('$refresh');
     }
 }
