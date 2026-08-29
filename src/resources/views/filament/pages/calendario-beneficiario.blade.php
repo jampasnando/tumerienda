@@ -91,11 +91,18 @@
             <div>Sáb</div>
             <div>Dom</div>
         </div>
+        <div
+            wire:key="calendario-{{ $this->anio }}-{{ $this->mes }}"
+            class="cal-grid"
+        >
             {{-- Calendario --}}
         <div class="cal-grid">
             @foreach ($dias as $dia)
                 @if(!$dia)
-                    <div class="cal-day bg-transparent border-none"></div>
+                    <div
+                        wire:key="vacio-{{ $this->anio }}-{{ $this->mes }}-{{ $index }}"
+                        class="cal-day bg-transparent border-none"
+                    ></div>
                     @continue
                 @endif
                 @php
@@ -106,6 +113,7 @@
                     {{-- href="{{ \App\Filament\Pages\ProduccionDia::getUrl([
                         'fecha'=>$fecha
                     ]) }}" --}}
+                    wire:key="dia-{{ $fecha }}"
                     href="#"
                     class="cal-day block hover:bg-gray-50 transition"
                     target="_blank"
