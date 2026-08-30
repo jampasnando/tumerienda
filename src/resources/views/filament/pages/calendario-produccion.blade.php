@@ -5,6 +5,7 @@
     $resumen = $this->getResumen();
 @endphp
 <style>
+.\*, .\*::before, .\*::after { box-sizing: border-box; }
 .cal-grid{
     display:grid;
     gap:8px;
@@ -45,10 +46,18 @@
     font-weight:bold;
     font-size:12px;
 }
+.cal-header > div {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 .cal-header,
 .cal-grid{
-    min-width:1100px;
+    width:100%;
+    min-width:700px;
+    grid-auto-rows: minmax(140px, auto);
 }
+.cal-header{ min-width:700px; width:100%; }
 </style>
 <div class="space-y-4">
 
@@ -85,7 +94,6 @@
             class="cal-grid"
         >
             {{-- Calendario --}}
-        <div class="cal-grid">
             @foreach ($dias as $index => $dia)
 
                 @if(!$dia)
