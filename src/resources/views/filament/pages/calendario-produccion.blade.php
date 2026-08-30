@@ -82,8 +82,10 @@
         </div>
         <div
             wire:key="calendario-{{ $this->anio }}-{{ $this->mes }}"
+            class="cal-grid"
         >
             {{-- Calendario --}}
+        <div class="cal-grid">
             @foreach ($dias as $index => $dia)
 
                 @if(!$dia)
