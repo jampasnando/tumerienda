@@ -50,12 +50,13 @@
     display:flex;
     align-items:center;
     justify-content:center;
+    background-color: whitesmoke;
 }
 .cal-header,
 .cal-grid{
     width:100%;
     min-width:700px;
-    grid-auto-rows: minmax(140px, auto);
+    /* grid-auto-rows: minmax(140px, auto); */
 }
 .cal-header{ min-width:700px; width:100%; }
 </style>
