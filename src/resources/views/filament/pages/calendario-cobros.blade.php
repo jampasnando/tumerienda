@@ -113,6 +113,7 @@
                 <div
                     wire:key="dia-{{ $fecha }}"
                     class="cal-day block hover:bg-gray-50 transition"
+                    style="background:lemonchiffon"
                 >
 
                     <div class="cal-date flex justify-between">
