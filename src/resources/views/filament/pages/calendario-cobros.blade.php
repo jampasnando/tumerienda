@@ -128,15 +128,18 @@
                                 <span class="truncate">
                                     {{ $item->beneficiario_nombre ?: ($item->nombreCliente ?: 'Sin beneficiario') }}
                                 </span>
-                                <span class="font-bold whitespace-nowrap">
+                                {{-- <span class="font-bold whitespace-nowrap">
                                     {{ $item->monto }}
-                                </span>
+                                </span> --}}
                             </div>
                             <div class="text-[10px] text-gray-500">
                                 {{ $item->plan_nombre ?: 'Sin plan' }}
                             </div>
-                            <div class="text-[10px] text-gray-500">
+                            {{-- <div class="text-[10px] text-gray-500">
                                 {{ $item->alias }}
+                            </div> --}}
+                            <div class="text-[8px] text-gray-300">
+                                {{ $item->nombreCliente ? 'Cliente: '.$item->nombreCliente : '' }}
                             </div>
                         </div>
 
