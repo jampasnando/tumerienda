@@ -69,7 +69,7 @@ Route::get('/avisos', [AvisoController::class, 'avisos']);
 // Route::get('/configuracion', [BisaController::class, 'configuracion']);
 
 // Route::post('/confirmaPago',"App\Http\Controllers\Api\BisaController@confirma");
-Route::post('/confirmaPago', [BisaController::class, 'confirma']);
+Route::post('/confirmaPagox', [BisaController::class, 'confirmax']);
 Route::post("/obtieneqr","App\Http\Controllers\Api\BisaController@obtieneqr");
 Route::post("/verificapagoqr","App\Http\Controllers\Api\BisaController@verificapagoqr");
 Route::post("/veestadoqr","App\Http\Controllers\Api\BisaController@veestadoqr");

@@ -21,7 +21,7 @@ use setasign\Fpdi\Fpdi;
 class BisaController extends Controller
 {
     //
-    public function confirma(Request $request)
+    public function confirmax(Request $request)
     {
         return response()->json([
             'ok' => true,
