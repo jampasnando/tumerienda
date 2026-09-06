@@ -32,6 +32,7 @@ class BisaController extends Controller
         $password='Tumeriend@123';
         $header = $request->header('Authorization');
         $partes= explode(':',base64_decode(explode(' ',$header)[1]));
+        Log::info("AAAAA partes: ",json_encode($partes));
         if($partes[0]==$usuario && $partes[1]==$password){
             $validator=Validator::make($request->all(),[
                 "alias"=>"required",
