@@ -21,13 +21,120 @@ use setasign\Fpdi\Fpdi;
 class BisaController extends Controller
 {
     //
-    public function confirmax(Request $request)
-    {
-        return response()->json([
-            'ok' => true,
-            'mensaje' => 'Endpoint funcionando',
-            'data' => $request->all()
-        ]);
+    public function confirma(Request $request){
+        // $usuario='bisaqr';
+        // $password='Di0sEs@mor';
+        // $usuario='qruserXXLprod1';
+        // $password='Mamier@dmin2024';
+        // $usuario='XXLqruser';
+        // $password='Mamier@2024admin';
+        $usuario='bisaqr';
+        $password='Tumeriend@123';
+        $header = $request->header('Authorization');
+        $partes= explode(':',base64_decode(explode(' ',$header)[1]));
+        if($partes[0]==$usuario && $partes[1]==$password){
+            $validator=Validator::make($request->all(),[
+                "alias"=>"required",
+                "numeroOrdenOriginante"=>"required",
+                "monto"=>"required",
+                "idQr"=>"required",
+                "moneda"=>"required",
+                "fechaproceso"=>"required",
+                "cuentaCliente"=>"required",
+                "nombreCliente"=>"required",
+                "documentoCliente"=>"required",
+            ]);
+            if($validator->fails()){
+                $data=["codigo"=>"9999","mensaje"=>"No se pudo procesar"];
+                return response(json_encode($data),200)->header('Content-Type','application/json');
+            }
+            // $nuevo=Cobrosqr::create([
+            // "alias"=>$request->alias,
+            // "numeroOrdenOriginante"=>$request->numeroOrdenOriginante,
+            // "monto"=>$request->monto,
+            // "idQr"=>$request->idQr,
+            // "moneda"=>$request->moneda,
+            // "fechaproceso"=>$request->fechaproceso,
+            // "cuentaCliente"=>$request->cuentaCliente,
+            // "nombreCliente"=>$request->nombreCliente,
+            // "documentoCliente"=>$request->documentoCliente,
+            // "fechareg"=>date("Y-m-d H:i:s")
+            // ]);
+            $nuevo=Cobrosqr::firstOrCreate(
+                ['alias' => $request->alias],
+                [
+                    'numeroOrdenOriginante' => $request->numeroOrdenOriginante,
+                    'monto' => $request->monto,
+                    'idQr' => $request->idQr,
+                    'moneda' => $request->moneda,
+                    'fechaproceso' => $request->fechaproceso,
+                    'cuentaCliente' => $request->cuentaCliente,
+                    'nombreCliente' => $request->nombreCliente,
+                    'documentoCliente' => $request->documentoCliente,
+                    'fechareg' => now(),
+                ]
+            );
+            if (preg_match('/^Susc(\d+)_Benef(\d+)_/', $request->alias, $matches)) {
+
+                $planId = $matches[1];
+                $beneficiarioId = $matches[2];
+                BeneficiarioPlan::firstOrCreate(
+                    [
+                        'alias' => $request->alias,
+                    ],
+                    [
+                        'beneficiario_id' => $beneficiarioId,
+                        'plan_id' => $planId,
+                        'alias' => $request->alias,
+                        'detalle' => json_encode($request->all()),
+                        'estado' => true,
+                        'nrorecibidos' => 0,
+                    ]
+                );
+                try {
+                    $beneficiario = \App\Models\Beneficiario::with('tutorActivo.tutor','plan')
+                        ->where('id', $beneficiarioId)
+                        ->firstOrFail();
+                    $plan = $beneficiario->beneficiarioPlans()
+                        ->where('plan_id', $planId)
+                        ->firstOrFail()
+                        ->plan
+                        ->nombre;
+                    // $nombreTutor = $beneficiario->tutorActivo?->tutor?->nombre;
+                    $correoTutor = $beneficiario->tutorActivo?->tutor?->email;
+                    Mail::raw(
+                            'Gracias por su Suscripción al plan: '.$plan.
+                            ' para '.$beneficiario->nombre.
+                            '. En su aplicación puede ahora elegir las fechas y meriendas a ser entregadas.'.
+                            'Registro: '.$request->alias,
+                            function ($message) use ($beneficiario, $correoTutor) {
+                                $message->to($correoTutor)
+                                        ->subject('Suscripción recibida para '.$beneficiario->nombre);
+                            }
+                        );
+
+                        return response()->json([
+                            'ok' => true,
+                            'mensaje' => 'Correo enviado correctamente.'
+                        ]);
+
+                    } catch (\Exception $e) {
+
+                        return response()->json([
+                            'ok' => false,
+                            'error' => $e->getMessage()
+                        ],500);
+
+                    }
+
+            }
+
+            $data=["codigo"=>"0000","mensaje"=>"Registro exitoso"];
+        }
+        else{
+            $data=["codigo"=>"9999","mensaje"=>"No se pudo procesar"];
+        }
+        return response(json_encode($data),200)->header('Content-Type','application/json');
     }
 
     public function obtieneqr(Request $request)
