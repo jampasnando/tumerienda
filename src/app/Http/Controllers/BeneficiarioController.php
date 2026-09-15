@@ -163,10 +163,10 @@ class BeneficiarioController extends Controller
         //     }])
         //     ->get();
         $ofertassucritas = Oferta::where('activo', 1)
-            ->with(['suscripciones' => function ($q) use ($beneficiarioId, $mes, $ano) {
+            ->with(['suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
                 $q->where('beneficiario_id', $beneficiarioId)
                 ->whereMonth('fecha', $mes)
-                ->whereYear('fecha', $ano);
+                ->whereYear('fecha', $anio);
             }])
             ->get();
 
