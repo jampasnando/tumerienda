@@ -148,9 +148,11 @@ class BeneficiarioController extends Controller
             ->whereBetween('fecha', [$inicio, $fin])
 
             ->with([
-                'suscripciones' => function ($q) use ($beneficiarioId) {
+                'suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
 
-                    $q->where('beneficiario_id', $beneficiarioId);
+                    $q->where('beneficiario_id', $beneficiarioId)
+                        ->whereMonth('fecha', $mes)
+                        ->whereYear('fecha', $anio);
                 }
             ])
 
