@@ -165,15 +165,45 @@ class BeneficiarioController extends Controller
         //     }])
         //     ->get();
 
+        // $ofertas = Oferta::query()
+        //     ->where('activo', 1)
+        //     ->whereMonth('fecha', $mes)
+        //     ->whereYear('fecha', $anio)
+        //     ->with([
+        //         'suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
+        //             $q->where('beneficiario_id', $beneficiarioId)
+        //             ->whereMonth('fecha', $mes)
+        //             ->whereYear('fecha', $anio);
+        //         }
+        //     ])
+        //     ->orderBy('fecha')
+        //     ->get();
+
+        // $ofertassucritas = Oferta::query()
+        //     ->where('activo', 1)
+        //     ->whereMonth('fecha', $mes)
+        //     ->whereYear('fecha', $anio)
+        //     ->whereHas('suscripciones', function ($q) use ($beneficiarioId, $mes, $anio) {
+        //         $q->where('beneficiario_id', $beneficiarioId)
+        //         ->whereMonth('fecha', $mes)
+        //         ->whereYear('fecha', $anio);
+        //     })
+        //     ->with([
+        //         'suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
+        //             $q->where('beneficiario_id', $beneficiarioId)
+        //             ->whereMonth('fecha', $mes)
+        //             ->whereYear('fecha', $anio);
+        //         }
+        //     ])
+        //     ->orderBy('fecha')
+        //     ->get();
+
         $ofertas = Oferta::query()
             ->where('activo', 1)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $anio)
+            ->whereBetween('fecha', [$inicio, $fin])
             ->with([
-                'suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
-                    $q->where('beneficiario_id', $beneficiarioId)
-                    ->whereMonth('fecha', $mes)
-                    ->whereYear('fecha', $anio);
+                'suscripciones' => function ($q) use ($beneficiarioId) {
+                    $q->where('beneficiario_id', $beneficiarioId);
                 }
             ])
             ->orderBy('fecha')
@@ -181,22 +211,19 @@ class BeneficiarioController extends Controller
 
         $ofertassucritas = Oferta::query()
             ->where('activo', 1)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $anio)
-            ->whereHas('suscripciones', function ($q) use ($beneficiarioId, $mes, $anio) {
+            ->whereBetween('fecha', [$inicio, $fin])
+            ->whereHas('suscripciones', function ($q) use ($beneficiarioId) {
                 $q->where('beneficiario_id', $beneficiarioId)
-                ->whereMonth('fecha', $mes)
-                ->whereYear('fecha', $anio);
+                ->whereColumn('suscripciones.fecha', 'ofertas.fecha');
             })
             ->with([
-                'suscripciones' => function ($q) use ($beneficiarioId, $mes, $anio) {
-                    $q->where('beneficiario_id', $beneficiarioId)
-                    ->whereMonth('fecha', $mes)
-                    ->whereYear('fecha', $anio);
+                'suscripciones' => function ($q) use ($beneficiarioId) {
+                    $q->where('beneficiario_id', $beneficiarioId);
                 }
             ])
             ->orderBy('fecha')
             ->get();
+
         Log::info("suscripcioens",["ofertasconsusc"=>$ofertas]);
         $resultado = $ofertas->map(function ($oferta) {
 
