@@ -225,9 +225,49 @@ class BeneficiarioController extends Controller
             ->get();
 
         Log::info("suscripcioens",["ofertasconsusc"=>$ofertas]);
+        // $resultado = $ofertas->map(function ($oferta) {
+
+        //     $suscripcion = $oferta->suscripciones->first();
+
+        //     $estado = null;
+        //     $color = 'gray';
+
+        //     if ($suscripcion) {
+
+        //         $estado = $suscripcion->estado;
+
+        //         switch ($suscripcion->estado) {
+
+        //             case 'pendiente':
+        //                 $color = 'orange';
+        //                 break;
+
+        //             case 'entregado':
+        //                 $color = 'green';
+        //                 break;
+
+        //             case 'noentregado':
+        //                 $color = 'red';
+        //                 break;
+        //         }
+        //     }
+
+        //     return [
+        //         'fecha' => $oferta->fecha,
+        //         'oferta_id' => $oferta->id,
+        //         'suscripcion_id' => $suscripcion?->id,
+        //         'estado' => $estado,
+        //         'color' => $color,
+        //     ];
+        // });
         $resultado = $ofertas->map(function ($oferta) {
 
-            $suscripcion = $oferta->suscripciones->first();
+            $suscripcion = $oferta->suscripciones
+                ->first(function ($suscripcion) use ($oferta) {
+                    return $suscripcion->oferta_id == $oferta->id
+                        && Carbon::parse($suscripcion->fecha)->format('Y-m-d') ===
+                        Carbon::parse($oferta->fecha)->format('Y-m-d');
+                });
 
             $estado = null;
             $color = 'gray';
@@ -260,7 +300,6 @@ class BeneficiarioController extends Controller
                 'color' => $color,
             ];
         });
-
         $planesDelBeneficiario = BeneficiarioPlan::where('beneficiario_id', $beneficiarioId)
             ->with('plan')
             ->get();
