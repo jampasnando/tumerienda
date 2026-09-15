@@ -157,9 +157,16 @@ class BeneficiarioController extends Controller
             ->orderBy('fecha')
             ->get();
 
+        // $ofertassucritas = Oferta::where('activo', 1)
+        //     ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
+        //         $q->where('beneficiario_id', $beneficiarioId);
+        //     }])
+        //     ->get();
         $ofertassucritas = Oferta::where('activo', 1)
-            ->with(['suscripciones' => function ($q) use ($beneficiarioId) {
-                $q->where('beneficiario_id', $beneficiarioId);
+            ->with(['suscripciones' => function ($q) use ($beneficiarioId, $mes, $ano) {
+                $q->where('beneficiario_id', $beneficiarioId)
+                ->whereMonth('fecha', $mes)
+                ->whereYear('fecha', $ano);
             }])
             ->get();
 
